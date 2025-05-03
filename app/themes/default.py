@@ -38,7 +38,7 @@ class DefaultTheme(BaseTheme):
             b = int(color[4:6], 16)
             result["css"]["overlay_color"] = f"rgba({r}, {g}, {b}, 0.6)"
         else:
-            result["css"]["overlay_color"] = self._dark_or_light("rgba(0,0,0,0.6)", "rgba(0,0,0,0.45)")
+            result["css"]["overlay_color"] = self._dark_or_light("rgba(0,0,0,0.6)", "rgba(0,0,0,0.25)")
         
         # update album radius if spinning
         if data.get("spin"):
