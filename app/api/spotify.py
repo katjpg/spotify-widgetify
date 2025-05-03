@@ -94,11 +94,11 @@ class SpotifyApiClient:
         return None
         
     async def _fetch_recent_track(self, headers: Dict[str, str]) -> Optional[Track]:
-        """fetch recently played track from api"""
+        """fetch recently played track from api, ensuring we get the most recent by timestamp"""
         async with httpx.AsyncClient() as client:
             try:
                 response = await client.get(
-                    f"{self.settings.spotify_api_url}/me/player/recently-played?limit=1",
+                    f"{self.settings.spotify_api_url}/me/player/recently-played?limit=10",
                     headers=headers,
                     timeout=self.timeout
                 )
@@ -106,10 +106,17 @@ class SpotifyApiClient:
                 if response.status_code == 200:
                     data = response.json()
                     if data.get('items') and len(data['items']) > 0:
-                        return await self._process_track(data['items'][0]['track'])
-            except (httpx.RequestError, httpx.TimeoutException, ValueError):
+                        sorted_items = sorted(
+                            data['items'], 
+                            key=lambda item: item.get('played_at', ''), 
+                            reverse=True 
+                        )
+                        return await self._process_track(sorted_items[0]['track'])
+                print(f"Failed to fetch recent track, status: {response.status_code}")
+            except (httpx.RequestError, httpx.TimeoutException, ValueError) as e:
+                print(f"Error fetching recent track: {str(e)}")
                 pass
-                
+                    
         return None
     
     async def _process_track(self, track_data: Dict[str, Any]) -> Track:
