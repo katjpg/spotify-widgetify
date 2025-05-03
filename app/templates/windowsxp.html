@@ -1,0 +1,557 @@
+<svg width="400" height="220" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <foreignObject width="400" height="220">
+      <div xmlns="http://www.w3.org/1999/xhtml" class="container">
+        <style>
+          /* Font Import */
+          @import url('https://fonts.cdnfonts.com/css/tahoma');
+  
+          /* Basic Reset & Global Styles */
+          div, span, button, a, img, p {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font: inherit;
+            vertical-align: baseline;
+            box-sizing: border-box; 
+          }
+          a {
+            text-decoration: none; 
+          }
+          button {
+            cursor: pointer; /* Set cursor for buttons */
+            background: transparent;
+            border: none;
+            padding: 0;
+            color: inherit; /* Inherit text color */
+          }
+  
+          /* Main Player Container */
+          .player {
+            /* CSS Variables for Configuration */
+            --player-padding: 2px;
+            --player-active-white: {{ css.player_active_white }}; /* Dynamic color */
+            --player-disable-white: {{ css.player_disable_white }}; /* Dynamic color */
+            --title-bar-height: 24px;
+            --bottom-controls-height: 55px;
+            --title-bar-margin-bottom: 8px;
+            --content-area-height: calc(216px - var(--title-bar-height) - var(--bottom-controls-height) - calc(var(--player-padding) * 2) - var(--title-bar-margin-bottom));
+            --spectrograph-height-ratio: 0.5;
+            --spectrograph-total-height: calc(var(--content-area-height) * var(--spectrograph-height-ratio));
+            --spectrograph-gap-width: 2px;
+  
+            /* Dimensions and Layout */
+            width: 396px;
+            height: 216px; /* Adjusted to fit content based on calc above */
+            padding: var(--player-padding);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden; /* Hide overflow */
+  
+            /* Appearance */
+            font-family: 'Tahoma', sans-serif;
+            font-size: 12px;
+            color: var(--player-active-white);
+            box-sizing: border-box;
+            border: rgb(66 73 90) solid 1px;
+            background: linear-gradient(
+              to bottom,
+              rgb(32, 33, 44) 0%,
+              rgb(57, 65, 82) 40px,
+              rgb(96, 105, 140) calc(100% - var(--bottom-controls-height) - 10px),
+              rgb(44, 52, 66) calc(100% - 15px)
+            );
+          }
+  
+          /* Title Bar Section */
+          .player > .title-bar {
+            height: var(--title-bar-height);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0; /* Prevent shrinking */
+            user-select: none; /* Prevent text selection */
+            margin-bottom: var(--title-bar-margin-bottom);
+            padding: 2px 2px 2px 4px;
+            position: relative; /* For absolute positioning of children */
+            width: 100%;
+  
+            /* Appearance (Windows XP style) */
+            border-style: solid;
+            border-width: 1px;
+            border-top-color: #f3f6fa;
+            border-left-color: #f3f6fa;
+            border-bottom-color: #B0B8C2;
+            border-right-color: #B0B8C2;
+            background: linear-gradient(#f3f6fa 0%, #f3f6fa 34%, #D7E2EF 38%, #D7E2EF 100%);
+            box-shadow: inset 0 0 0 1px #FFFFFF; /* Inner white highlight */
+          }
+          .player > .title-bar .left {
+            display: flex;
+            align-items: center;
+          }
+          .player > .title-bar .left .icon {
+            width: 18px;
+            height: 18px;
+            margin-left: 2px; /* Space from edge */
+            margin-right: 8px; /* Space before title */
+            display: inline-block;
+            /* Embedded SVG icon (black music note) */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000000' d='M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+          }
+          .player > .title-bar .left .title {
+            display: inline-block;
+            color: black;
+            line-height: calc(var(--title-bar-height) - 4px); /* Vertically center */
+            font-size: 12px;
+            font-weight: 500; /* Make title bold */
+          }
+          .player > .title-bar .right {
+            position: absolute; /* Position in top right */
+            right: 2px;
+            top: 2px;
+            display: flex;
+            align-items: center;
+          }
+          .player > .title-bar .right > button {
+            /* Shared styles for title bar buttons */
+            --button-width: 28px;
+            --radius-amount: 3px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: var(--button-width);
+            height: 18px;
+            box-sizing: border-box;
+            position: relative; /* For pseudo-elements */
+            /* Button Appearance (Windows XP style) */
+            border-style: solid;
+            border-width: 1px;
+            border-top-color: #FAFAFC;
+            border-left-color: #FAFAFC;
+            border-bottom-color: #B0B8C2;
+            border-right-color: #B0B8C2;
+            background: linear-gradient(#f3f6fa 0%, #f3f6fa 34%, #D7E2EF 38%, #D7E2EF 100%);
+            box-shadow: inset 0 0 0 1px #FFFFFF;
+          }
+          .player > .title-bar .right button:active {
+            /* Active state style */
+            background: linear-gradient(#D7E2EF 0%, #D7E2EF 62%, #f3f6fa 66%, #f3f6fa 100%);
+            border-top-color: #B0B8C2;
+            border-left-color: #B0B8C2;
+            border-bottom-color: #FAFAFC;
+            border-right-color: #FAFAFC;
+          }
+          /* Specific Button Styles */
+          .player > .title-bar .right .minimize {
+            border-bottom-left-radius: var(--radius-amount);
+            border-top-left-radius: var(--radius-amount);
+          }
+          .player > .title-bar .right .minimize::after {
+            /* Minimize icon (-) */
+            content: '';
+            height: 2px;
+            width: 10px;
+            background-color: rgb(50, 50, 50);
+            display: block;
+            position: absolute;
+            bottom: 4px;
+            left: calc(50% - 5px);
+          }
+          .player > .title-bar .right .maximize::before {
+            /* Maximize icon (□) */
+            content: '';
+            position: absolute;
+            display: block;
+            width: 10px;
+            height: 8px;
+            border: 1px solid rgb(50, 50, 50);
+            border-top-width: 2px; /* Thicker top border */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+          }
+          .player > .title-bar .right .close {
+            width: calc(var(--button-width) * 1.2); /* Wider close button */
+            border-radius: 0 var(--radius-amount) var(--radius-amount) 0;
+            /* Red close button appearance */
+            background: linear-gradient(to bottom, rgb(255, 90, 90) 0%, rgb(240, 40, 40) 40%, rgb(210, 0, 0) 50%, rgb(190, 0, 0) 100%);
+            border-color: rgb(150, 0, 0);
+            box-shadow: inset 0 0 0 1px rgba(255, 150, 150, 0.5);
+          }
+          .player > .title-bar .right .close:active {
+            /* Active state for close button */
+            background: linear-gradient(to top, rgb(255, 90, 90) 0%, rgb(240, 40, 40) 40%, rgb(210, 0, 0) 50%, rgb(190, 0, 0) 100%);
+            border-color: rgb(100, 0, 0);
+          }
+          .player > .title-bar .right .close::before,
+          .player > .title-bar .right .close::after {
+            /* Close icon (X) using pseudo-elements */
+            content: '';
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            height: 2px;
+            width: 10px;
+            background-color: var(--player-active-white); /* White X */
+          }
+          .player > .title-bar .right .close::before {
+            transform: translate(-50%, -50%) rotate(-45deg);
+          }
+          .player > .title-bar .right .close::after {
+            transform: translate(-50%, -50%) rotate(45deg);
+          }
+  
+          /* Content Area (Album Art & Track Info) */
+          .player > .content-area {
+            height: var(--content-area-height);
+            flex-grow: 1; /* Take remaining vertical space */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Hide overflowing content */
+            padding: 5px 10px; /* Padding around content */
+            position: relative; /* For spectrograph positioning */
+          }
+          .player .content-wrapper {
+            display: flex;
+            align-items: center;
+            max-width: 100%;
+            position: relative; 
+            z-index: 2;
+          }
+          .player .album-cover {
+            width: 100px;
+            height: 100px;
+            flex-shrink: 0; /* Prevent shrinking */
+            margin-right: 15px; /* Space between cover and info */
+            background-size: cover; /* Scale image to cover */
+            background-position: center;
+            border: 1px solid rgba(0, 0, 0, 0.3); /* Subtle border */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* Drop shadow */
+          }
+          .player .track-info {
+            flex-grow: 1; /* Take remaining horizontal space */
+            text-align: left;
+            overflow: hidden; /* Hide overflowing text */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0; /* Allow shrinking for ellipsis */
+          }
+          .player .track-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--player-active-white);
+            text-overflow: ellipsis; 
+            overflow: hidden;
+            white-space: nowrap; /* Prevent wrapping */
+            margin-bottom: 5px; /* Space below track name */
+            max-width: 140px;
+            width: 100%;
+          }
+          .player .track-artist {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6); /* Dimmer color */
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100%;
+          }
+  
+          /* Spectrograph Visualization */
+          .spectrograph {
+            position: absolute;
+            top: 50%; /* Center vertically */
+            left: 0;
+            transform: translateY(-50%);
+            width: 100%;
+            height: var(--spectrograph-total-height);
+            display: flex;
+            align-items: flex-end; /* Bars grow from bottom */
+            overflow: hidden;
+            z-index: 1; /* Behind content wrapper */
+            /* SVG Mask for segmented look (3px bar, 1px gap) */
+            mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cdefs%3E%3Cpattern id='spectrograph_mask_pattern_v3' x='0' y='0' width='6px' height='4px' patternUnits='userSpaceOnUse'%3E%3Crect x='0' y='1px' width='6px' height='3px' fill='%23000'/%3E%3C/pattern%3E%3C/defs%3E%3Crect x='0' y='0' width='100%25' height='100%25' fill='url(%23spectrograph_mask_pattern_v3)'%3E%3C/rect%3E%3C/svg%3E");
+            -webkit-mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cdefs%3E%3Cpattern id='spectrograph_mask_pattern_v3' x='0' y='0' width='6px' height='4px' patternUnits='userSpaceOnUse'%3E%3Crect x='0' y='1px' width='6px' height='3px' fill='%23000'/%3E%3C/pattern%3E%3C/defs%3E%3Crect x='0' y='0' width='100%25' height='100%25' fill='url(%23spectrograph_mask_pattern_v3)'%3E%3C/rect%3E%3C/svg%3E");
+          }
+          .spectrograph__bar {
+            flex: 1; /* Distribute space evenly */
+            height: 100%; /* Full height of container */
+            background: linear-gradient(to bottom, rgba(213, 227, 252, 0.08), rgba(100, 150, 255, 0.08)); /* Bar color */
+            margin-right: var(--spectrograph-gap-width); /* Gap between bars */
+            transform: scaleY(0.05); /* Initial small height */
+            transform-origin: center bottom; /* Scale from bottom */
+            will-change: transform; /* Performance hint */
+            /* Animation Properties */
+            animation-name: spectro_anim_fluid;
+            animation-timing-function: linear; /* Smooth animation */
+            animation-iteration-count: infinite;
+            animation-direction: alternate; /* Animate up and down */
+          }
+          .spectrograph__bar:last-child {
+            margin-right: 0; /* No gap after last bar */
+          }
+  
+          /* Spectrograph Bar Animations (Significantly Faster) */
+          .spectrograph__bar:nth-child(1)  { animation-delay: 0.00s; animation-duration: 1.40s; }
+          .spectrograph__bar:nth-child(2)  { animation-delay: 0.08s; animation-duration: 1.57s; }
+          .spectrograph__bar:nth-child(3)  { animation-delay: 0.17s; animation-duration: 1.23s; }
+          .spectrograph__bar:nth-child(4)  { animation-delay: 0.25s; animation-duration: 1.46s; }
+          .spectrograph__bar:nth-child(5)  { animation-delay: 0.34s; animation-duration: 1.34s; }
+          .spectrograph__bar:nth-child(6)  { animation-delay: 0.42s; animation-duration: 1.62s; }
+          .spectrograph__bar:nth-child(7)  { animation-delay: 0.50s; animation-duration: 1.18s; }
+          .spectrograph__bar:nth-child(8)  { animation-delay: 0.59s; animation-duration: 1.74s; }
+          .spectrograph__bar:nth-child(9)  { animation-delay: 0.67s; animation-duration: 1.40s; }
+          .spectrograph__bar:nth-child(10) { animation-delay: 0.76s; animation-duration: 1.29s; }
+          .spectrograph__bar:nth-child(11) { animation-delay: 0.84s; animation-duration: 1.51s; }
+          .spectrograph__bar:nth-child(12) { animation-delay: 0.92s; animation-duration: 1.68s; }
+          .spectrograph__bar:nth-child(13) { animation-delay: 1.01s; animation-duration: 1.34s; }
+          .spectrograph__bar:nth-child(14) { animation-delay: 1.09s; animation-duration: 1.62s; }
+          .spectrograph__bar:nth-child(15) { animation-delay: 1.18s; animation-duration: 1.23s; }
+          .spectrograph__bar:nth-child(16) { animation-delay: 1.26s; animation-duration: 1.46s; }
+          .spectrograph__bar:nth-child(17) { animation-delay: 1.34s; animation-duration: 1.74s; }
+          .spectrograph__bar:nth-child(18) { animation-delay: 1.43s; animation-duration: 1.51s; }
+          .spectrograph__bar:nth-child(19) { animation-delay: 1.51s; animation-duration: 1.18s; }
+          .spectrograph__bar:nth-child(20) { animation-delay: 1.60s; animation-duration: 1.57s; }
+  
+          /* Keyframes for Spectrograph Animation */
+          @keyframes spectro_anim_fluid {
+            0%   { transform: scaleY(0.05); } /* Minimum height */
+            50%  { transform: scaleY(0.6); }  /* Maximum height */
+            100% { transform: scaleY(0.05); } /* Back to minimum */
+          }
+  
+          /* Bottom Controls Section */
+          .player > .bottom-controls {
+            height: var(--bottom-controls-height);
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0; /* Prevent shrinking */
+            position: relative;
+            padding: 5px 10px; /* Padding around controls */
+          }
+          .player .center-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 0;
+            height: calc(100% - 10px); /* Control background height */
+            width: 100%;
+            /* Background behind controls */
+            background: linear-gradient(
+              to top,
+              rgb(17, 20, 25) 0%,
+              rgb(17, 20, 25) 40%,
+              rgb(57, 65, 82) 50%,
+              rgb(40, 46, 58) 100%
+            );
+            padding: 0 10px; /* Padding inside background */
+            border-radius: 20px; /* Rounded corners */
+          }
+          .player .center-controls > .middle {
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 10; /* Ensure controls are above background */
+            height: 100%;
+          }
+  
+          /* Previous/Next Buttons */
+          .player .previous,
+          .player .next {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: transparent; /* No button background */
+          }
+          .player .previous .icon,
+          .player .next .icon {
+            width: 0;
+            height: 0;
+            display: flex; /* Needed for centering? */
+            box-sizing: border-box;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            position: relative; /* For pseudo-elements */
+          }
+          .player .previous .icon { /* Left pointing triangle */
+            border-right: 12px solid var(--player-active-white);
+          }
+          .player .next .icon { /* Right pointing triangle */
+            border-left: 12px solid var(--player-active-white);
+          }
+          .player .previous .icon::before { /* Vertical bar for previous icon */
+            content: '';
+            position: absolute;
+            left: -4px; /* Position left of triangle */
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2px;
+            height: 12px;
+            background-color: var(--player-active-white);
+          }
+          .player .next .icon::after { /* Vertical bar for next icon */
+            content: '';
+            position: absolute;
+            right: -4px; /* Position right of triangle */
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2px;
+            height: 12px;
+            background-color: var(--player-active-white);
+          }
+  
+          /* Play/Pause Button */
+          .player .playpause-wrapper {
+            --play-button-size: 40px;
+            padding: 3px; /* Creates outer ring effect */
+            border-radius: 50%; /* Circular */
+            display: flex;
+            z-index: 11; /* Above prev/next */
+            margin: 0 20px; /* Spacing around play button */
+            box-shadow: {{ css.control_shadow }}; /* Dynamic shadow */
+            /* Background gradient for the wrapper */
+            background: linear-gradient(
+              to top,
+              rgb(17, 20, 25) 0%,
+              rgb(17, 20, 25) 40%,
+              rgb(57, 65, 82) 60%,
+              rgb(57, 65, 82) 100%
+            );
+          }
+          .player .playpause {
+            background-color: {{ css.button_blue }}; /* Dynamic blue color */
+            width: var(--play-button-size);
+            height: var(--play-button-size);
+            border: none;
+            border-radius: 50%;
+            position: relative; /* For overlay elements */
+            overflow: hidden; /* Clip overlays */
+            box-shadow: {{ css.control_shadow }}; /* Dynamic inner shadow */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          .player .playpause .overlay-top {
+            /* Glossy highlight effect */
+            position: absolute;
+            background: radial-gradient(
+              circle,
+              rgba(255, 255, 255, 0) 0%,
+              rgba(255, 255, 255, 0.2) 40%,
+              rgba(255, 255, 255, 0.5) 99%,
+              rgba(255, 255, 255, 0.6) 100%
+            );
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+          }
+          .player .playpause .overlay-bottom {
+            /* Secondary overlay for depth/color */
+            background-color: {{ css.button_blue }}; /* Match base color */
+            position: absolute;
+            border-radius: 50%;
+            top: 45%; /* Offset */
+            left: -50%; /* Offset */
+            width: 200%;
+            height: 100%;
+          }
+          .player .playpause .overlay-bottom::after {
+            /* Inner glow effect */
+            content: '';
+            display: block;
+            width: var(--play-button-size);
+            height: var(--play-button-size);
+            border-radius: 50%;
+            position: absolute;
+            top: 10%;
+            left: 0;
+            right: 0;
+            margin: auto;
+            background: radial-gradient(
+              circle,
+              rgba(123, 240, 255, 0.8) 0%,
+              rgba(41, 175, 247, 0.6) 31%,
+              rgba(0, 82, 198, 0.1) 75%
+            );
+          }
+          .player .playpause .icon {
+            /* Play icon (triangle) */
+            width: 0;
+            height: 0;
+            position: relative; /* Above overlays */
+            z-index: 12;
+            box-sizing: border-box;
+            border-top: calc(var(--play-button-size) / 4) solid transparent;
+            border-left: calc(var(--play-button-size) / 2.8) solid var(--player-active-white); /* White triangle */
+            border-bottom: calc(var(--play-button-size) / 4) solid transparent;
+            margin-left: calc(var(--play-button-size) * 0.1); /* Offset slightly right for centering */
+          }
+  
+        </style>
+  
+        <a href="https://open.spotify.com/track/{{ track_id }}" target="_blank">
+          <div class="player">
+  
+            <div class="title-bar">
+              <div class="left">
+                <div class="icon"></div>
+                <span class="title">Now Playing</span>
+              </div>
+              <div class="right">
+                <button class="minimize" aria-label="Minimize"></button>
+                <button class="maximize" aria-label="Maximize"></button>
+                <button class="close" aria-label="Close"></button>
+              </div>
+            </div>
+  
+            <div class="content-area">
+              <div class="spectrograph">
+                <div class="spectrograph__bar"></div><div class="spectrograph__bar"></div><div class="spectrograph__bar"></div><div class="spectrograph__bar"></div><div class="spectrograph__bar"></div>
+                <div class="spectrograph__bar"></div><div class="spectrograph__bar"></div><div class="spectrograph__bar"></div><div class="spectrograph__bar"></div><div class="spectrograph__bar"></div>
+                <div class="spectrograph__bar"></div><div class="spectrograph__bar"></div><div class="spectrograph__bar"></div><div class="spectrograph__bar"></div><div class="spectrograph__bar"></div>
+                <div class="spectrograph__bar"></div><div class="spectrograph__bar"></div><div class="spectrograph__bar"></div><div class="spectrograph__bar"></div><div class="spectrograph__bar"></div>
+              </div>
+              <div class="content-wrapper">
+                <div class="album-cover" style="background-image: url('data:image/png;base64,{{ base_64_track_image }}');"></div>
+                <div class="track-info">
+                  <div class="track-name">{{ track_name }}</div>
+                  <div class="track-artist">{{ track_artist }}</div>
+                </div>
+              </div>
+            </div>
+  
+            <div class="bottom-controls">
+              <div class="center-controls">
+                <div class="middle">
+                  <button class="previous" aria-label="Previous">
+                    <div class='icon'></div>
+                  </button>
+                  <div class="playpause-wrapper">
+                    <button class="playpause" aria-label="Play/Pause">
+                      <div class="overlay-top"></div>
+                      <div class="overlay-bottom"></div>
+                      <div class="icon"></div>
+                    </button>
+                  </div>
+                  <button class="next" aria-label="Next">
+                    <div class='icon'></div>
+                  </button>
+                </div>
+              </div>
+            </div>
+  
+          </div></a></div></foreignObject>
+  </svg>

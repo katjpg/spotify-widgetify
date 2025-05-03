@@ -1,0 +1,220 @@
+<svg width="400" height="180" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <foreignObject width="400" height="180">
+      <div xmlns="http://www.w3.org/1999/xhtml" class="container">
+        <style>
+          /* CSS Reset */
+          div, span, h1, p, a, img {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-size: 100%;
+            font: inherit;
+            vertical-align: baseline;
+          }
+          a { text-decoration: none; }
+          
+          /* Main Widget Container */
+          main {
+            display: flex;
+            flex-direction: column;
+            padding: {{ css.container_padding }};
+            border-radius: 22px;
+            overflow: hidden;
+            position: relative;
+            height: 140px;
+            width: 360px; /* Account for padding */
+          }
+          
+          /* Background with blur effect */
+          .background-blur {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/png;base64,{{ base_64_track_image }}");
+            background-size: cover;
+            background-position: center;
+            filter: blur(30px);
+            opacity: 0.35;
+            z-index: -1;
+          }
+          
+          .background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: {{ css.overlay_color }};
+            z-index: -1;
+          }
+          
+          /* Content Container */
+          .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+          }
+          
+          /* Header with Now Playing and Spotify logo */
+          .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            margin-left: 8px;
+          }
+          
+          .logo {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            filter: brightness(0) invert(1); /* Make logo white */
+          }
+          
+          .now-playing {
+            font-family: {{ css.text_font }};
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+          }
+          
+          /* Vinyl Player Section - Centered and moved higher */
+          .player-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: -80px; /* Move it higher */
+            margin-left: 90px;
+          }
+          
+          /* Album Cover and Vinyl Container */
+          .album-container {
+            position: relative;
+            width: 132px;
+            height: 132px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          
+          /* Album art in vinyl */
+          .cover {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            position: absolute;
+            z-index: 2;
+            {% if spin %}animation: spin {{ css.spin_duration }} linear infinite;{% endif %}
+          }
+          
+          /* Vinyl SVG overlay */
+          .vinyl-overlay {
+            position: absolute;
+            width: 138px;
+            height: 138px;
+            z-index: 1;
+            {% if spin %}animation: spin {{ css.spin_duration }} linear infinite;{% endif %}
+          }
+          
+          /* Vinyl Needle - enlarged and repositioned */
+          .vinyl-needle {
+            position: absolute;
+            width: 160px; 
+            height: 240px; 
+            right: 15px; /* Position relative to the vinyl */
+            top: -55px; /* Position higher to account for larger size */
+            z-index: 3; /* Above both vinyl and album art */
+            transform-origin: top right;
+            transform: rotate(9.5deg);
+          }
+          
+          /* Track Info Section */
+          .track-info {
+            text-align: left;
+            margin-top: -100px;
+            font-family: {{ css.text_font }};
+            position: relative;
+            z-index: 2;
+            width: 100%;
+          }
+          
+          /* Song Title */
+          .track-name {
+            font-size: 20px;
+            font-weight: 500;
+            color: {{ css.title_color }};
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            max-width: 160px;
+            padding: 0 10px;
+          }
+          
+          /* Artist Name */
+          .track-artist {
+            font-size: 14px;
+            color: {{ css.subtitle_color }};
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            max-width: 160px;
+            margin-top: 4px;
+            padding: 0 10px;
+          }
+          
+          /* Animations */
+          @keyframes spin {
+            100% { transform: rotate(360deg); }
+          }
+        </style>
+        
+        <a href="https://open.spotify.com/track/{{ track_id }}" target="_blank">
+          <main>
+            <!-- Blurred background -->
+            <div class="background-blur"></div>
+            <div class="background-overlay"></div>
+            
+            <div class="content">
+              <!-- Header with Now Playing text and Spotify logo -->
+              <div class="header">
+                <img class="logo" src="data:image/svg+xml;base64,{{ logo }}" alt="Spotify"/>
+                <div class="now-playing">Now Playing</div>
+              </div>
+              
+              <!-- Vinyl Player Section -->
+              <div class="player-container">
+                <div class="album-container">
+                  <!-- Vinyl record overlay -->
+                  <img 
+                    class="vinyl-overlay"
+                    src="data:image/svg+xml;base64,{{ vinyl_svg }}"
+                    alt="Vinyl Record"
+                  />
+                  <!-- Album art -->
+                  <img 
+                    class="cover" 
+                    src="data:image/png;base64,{{ base_64_track_image }}" 
+                    alt="{{ track_name }} by {{ track_artist }}"
+                  />
+                </div>
+                <!-- Vinyl needle overlay - positioned outside album container for better placement -->
+                <img 
+                  class="vinyl-needle"
+                  src="data:image/svg+xml;base64,{{ vinyl_needle_svg }}"
+                  alt="Vinyl Needle"
+                />
+              </div>
+              
+              <!-- Track Information at the bottom -->
+              <div class="track-info">
+                <div class="track-name">{{ track_name }}</div>
+                <div class="track-artist">{{ track_artist }}</div>
+              </div>
+            </div>
+          </main>
+        </a>
+      </div>
+    </foreignObject>
+  </svg>

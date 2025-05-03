@@ -1,0 +1,375 @@
+<svg width="400" height="195" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <foreignObject width="400" height="195">
+      <div xmlns="http://www.w3.org/1999/xhtml" class="container">
+        <style>
+          /* CSS Reset */
+          * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-size: 100%;
+            font: inherit;
+            vertical-align: baseline;
+            outline: none;
+          }
+          
+          a { text-decoration: none; }
+          
+          /* Main Widget Container */
+          .aero-player {
+            font-family: "Segoe UI", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", sans-serif;
+            width: 380px;
+            height: 180px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            font-size: 8pt;
+          }
+          
+          /* Header bar with gradient */
+          .header-bar {
+            height: 25px;
+            background: linear-gradient(to bottom, #3a7ab3 0%, #346ea7 100%);
+            border-bottom: 1px solid #265786;
+            border-radius: 7px 7px 0 0;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            position: relative;
+            z-index: 4;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+          }
+          
+          /* Header glass shine effect */
+          .header-shine {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 12px;
+            background: linear-gradient(to bottom, 
+                        rgba(255, 255, 255, 0.4) 0%, 
+                        rgba(255, 255, 255, 0.1) 100%);
+            pointer-events: none;
+            z-index: 5;
+            border-radius: 7px 7px 0 0;
+          }
+          
+          /* Spotify logo in header */
+          .spotify-logo {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            filter: brightness(0) invert(1);
+          }
+          
+          /* Header title text */
+          .player-title {
+            color: white;
+            font-weight: 600;
+            font-size: 9pt;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+          }
+          
+          /* Content area with album and track info */
+          .player-content {
+            height: 110px;
+            position: relative;
+            z-index: 1;
+            padding: 12px;
+            background: linear-gradient(to bottom, #c4daf5 0%, #a7c7eb 100%);
+            overflow: hidden;
+          }
+          
+          /* Glass shine effect overlay */
+          .glass-shine {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(to bottom, 
+                        rgba(255, 255, 255, 0.7) 0%, 
+                        rgba(255, 255, 255, 0.15) 50%, 
+                        rgba(255, 255, 255, 0) 100%);
+            pointer-events: none;
+            z-index: 2;
+          }
+          
+          /* Content layout */
+          .content-layout {
+            display: flex;
+            position: relative;
+            z-index: 3;
+            height: 100%;
+          }
+          
+          /* Album artwork */
+          .album-container {
+            position: relative;
+            margin-right: 12px;
+          }
+          
+          .album-art {
+            width: 90px;
+            height: 90px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 3px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+          }
+          
+          /* Track info */
+          .track-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+          }
+          
+          .track-name {
+            font-size: 12pt;
+            font-weight: bold;
+            color: #2c3236;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            max-width: 260px;
+          }
+          
+          .track-artist {
+            font-size: 10pt;
+            color: rgb(63, 149, 235);
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            max-width: 260px;
+          }
+          
+          /* Spectrograph styles */
+          .spectrograph-container {
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            margin-right: 10px;
+            z-index: 3;
+          }
+          
+          .spectrograph {
+            display: flex;
+            align-items: flex-end;
+            width: 240px;
+            height: 20px; 
+            overflow: hidden;
+            mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cdefs%3E%3Cpattern id='spectrograph' x='0' y='0' width='6' height='4' patternUnits='userSpaceOnUse'%3E%3Crect x='0' y='2' width='6' height='2' fill='%23000'/%3E%3C/pattern%3E%3C/defs%3E%3Crect x='0' y='0' width='100%25' height='100%25' fill='url(%23spectrograph)'%3E%3C/rect%3E%3C/svg%3E");
+          }
+          
+          .spectrograph__bar {
+            margin: 0 6px 0 0;
+            flex: 0 0 6px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateY(100%);
+            transform-origin: center bottom;
+            animation: animation 1.5s steps(5, start) infinite alternate;
+            will-change: transform;
+          }
+          
+          .spectrograph__bar:nth-child(1) { animation-name: animation1; animation-delay: 50ms; animation-duration: 1600ms; }
+          .spectrograph__bar:nth-child(2) { animation-name: animation2; animation-delay: 100ms; animation-duration: 1800ms; }
+          .spectrograph__bar:nth-child(3) { animation-name: animation3; animation-delay: 150ms; animation-duration: 1700ms; }
+          .spectrograph__bar:nth-child(4) { animation-name: animation1; animation-delay: 200ms; animation-duration: 1500ms; }
+          .spectrograph__bar:nth-child(5) { animation-name: animation2; animation-delay: 250ms; animation-duration: 1900ms; }
+          .spectrograph__bar:nth-child(6) { animation-name: animation3; animation-delay: 300ms; animation-duration: 1600ms; }
+          .spectrograph__bar:nth-child(7) { animation-name: animation1; animation-delay: 350ms; animation-duration: 1700ms; }
+          .spectrograph__bar:nth-child(8) { animation-name: animation2; animation-delay: 400ms; animation-duration: 1800ms; }
+          .spectrograph__bar:nth-child(9) { animation-name: animation3; animation-delay: 450ms; animation-duration: 1600ms; }
+          .spectrograph__bar:nth-child(10) { animation-name: animation1; animation-delay: 500ms; animation-duration: 1700ms; }
+          .spectrograph__bar:nth-child(11) { animation-name: animation2; animation-delay: 550ms; animation-duration: 1500ms; }
+          .spectrograph__bar:nth-child(12) { animation-name: animation3; animation-delay: 600ms; animation-duration: 1800ms; }
+          .spectrograph__bar:nth-child(13) { animation-name: animation1; animation-delay: 650ms; animation-duration: 1700ms; }
+          .spectrograph__bar:nth-child(14) { animation-name: animation2; animation-delay: 700ms; animation-duration: 1600ms; }
+          .spectrograph__bar:nth-child(15) { animation-name: animation3; animation-delay: 750ms; animation-duration: 1900ms; }
+          .spectrograph__bar:nth-child(16) { animation-name: animation1; animation-delay: 800ms; animation-duration: 1700ms; }
+          .spectrograph__bar:nth-child(17) { animation-name: animation2; animation-delay: 850ms; animation-duration: 1600ms; }
+          .spectrograph__bar:nth-child(18) { animation-name: animation3; animation-delay: 900ms; animation-duration: 1800ms; }
+          .spectrograph__bar:nth-child(19) { animation-name: animation1; animation-delay: 950ms; animation-duration: 1700ms; }
+          .spectrograph__bar:nth-child(20) { animation-name: animation2; animation-delay: 1000ms; animation-duration: 1500ms; margin: 0; }
+          
+          @keyframes animation1 {
+            0%, 5% {
+                transform: translateY(100%);
+            }
+            100% {
+                transform: translateY(0);
+            }
+          }
+          
+          @keyframes animation2 {
+            0%, 66% {
+                transform: translateY(100%);
+            }
+            33%, 100% {
+                transform: translateY(0);
+            }
+          }
+          
+          @keyframes animation3 {
+            33%, 66% {
+                transform: translateY(100%);
+            }
+            0%, 45%, 100% {
+                transform: translateY(0);
+            }
+          }
+          
+          /* Controls section */
+          .controls {
+            height: 50px;
+            text-align: center;
+            padding: 5px 10px;
+            position: relative;
+            z-index: 3;
+            background: linear-gradient(to bottom, #cedce7 0%, #596a72 100%);
+            border-top: 1px solid #3c4349;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            border-radius: 0 0 8px 8px;
+          }
+          
+          /* Media buttons */
+          .control-button {
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 6px;
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #c0d3e2;
+            background: linear-gradient(to bottom, #dce8f4 0%, #7c8d9e 100%);
+          }
+          
+          /* Button icon colors */
+          .control-icon {
+            width: 14px;
+            height: 14px;
+            fill: #2c3236;
+            position: relative;
+            z-index: 5;
+          }
+          
+          /* Inner button shine */
+          .button-shine {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 15px;
+            background: linear-gradient(to bottom, 
+                        rgba(255, 255, 255, 0.9) 0%, 
+                        rgba(255, 255, 255, 0.1) 100%);
+            z-index: 4;
+            border-radius: 15px 15px 0 0;
+          }
+        </style>
+        
+        <a href="https://open.spotify.com/track/{{ track_id }}" target="_blank">
+          <div class="aero-player">
+            <!-- Header bar -->
+            <div class="header-bar">
+              <img class="spotify-logo" src="data:image/svg+xml;base64,{{ logo }}" alt="Spotify">
+              <div class="player-title">Now Playing...</div>
+              <div class="header-shine"></div>
+            </div>
+            
+            <!-- Main content area with album and track info -->
+            <div class="player-content">
+              <!-- Glass shine effect -->
+              <div class="glass-shine"></div>
+              
+              <!-- Content layout -->
+              <div class="content-layout">
+                <!-- Album artwork -->
+                <div class="album-container">
+                  <img class="album-art" src="data:image/png;base64,{{ base_64_track_image }}" alt="{{ track_name }} by {{ track_artist }}">
+                </div>
+                
+                <!-- Track info -->
+                <div class="track-info">
+                  <div class="track-name">{{ track_name }}</div>
+                  <div class="track-artist">{{ track_artist }}</div>
+                </div>
+              </div>
+              
+              <!-- Spectrograph visualization -->
+              <div class="spectrograph-container">
+                <div class="spectrograph">
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                  <div class="spectrograph__bar"></div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Media controls bar -->
+            <div class="controls">
+              <!-- Previous button -->
+              <button class="control-button">
+                <svg class="control-icon" viewBox="0 0 24 24">
+                  <path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z"/>
+                </svg>
+                <div class="button-shine"></div>
+              </button>
+              
+              <!-- Play button -->
+              <button class="control-button">
+                <svg class="control-icon" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7L8 5z"/>
+                </svg>
+                <div class="button-shine"></div>
+              </button>
+              
+              <!-- Pause button -->
+              <button class="control-button">
+                <svg class="control-icon" viewBox="0 0 24 24">
+                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                </svg>
+                <div class="button-shine"></div>
+              </button>
+              
+              <!-- Next button -->
+              <button class="control-button">
+                <svg class="control-icon" viewBox="0 0 24 24">
+                  <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+                </svg>
+                <div class="button-shine"></div>
+              </button>
+            </div>
+          </div>
+        </a>
+      </div>
+    </foreignObject>
+  </svg>

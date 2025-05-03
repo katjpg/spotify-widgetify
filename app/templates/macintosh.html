@@ -1,0 +1,221 @@
+<svg width="500" height="200" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" xmlns:xlink="[http://www.w3.org/1999/xlink](http://www.w3.org/1999/xlink)">
+    <foreignObject width="500" height="200">
+      <div xmlns="[http://www.w3.org/1999/xhtml](http://www.w3.org/1999/xhtml)" class="container">
+        <style>
+          /* Import Chicago font */
+          @import url("https://fonts.cdnfonts.com/css/chicago-2");
+
+          /* CSS Reset */
+          div, span, h1, h3, h4, p, a, img, button {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-size: 100%;
+            font: inherit;
+            vertical-align: baseline;
+            box-sizing: border-box;
+          }
+
+          a { text-decoration: none; }
+
+          /* Define the pattern backgrounds */
+          .container {
+            --darkBg: radial-gradient(circle at center, #000 1px, #555 1px, #555 2px) 0 0 / 2px 2px;
+            --lightBg: radial-gradient(circle at center, #ccc 0.5px, #fff 0.5px, #fff 2px) 0 0 / 2px 2px;
+            --windowBg: linear-gradient(to right, #fff, #fff) 6.5px 7px / 9px 9px no-repeat,
+                         linear-gradient(to right, #000, #000) 5.5px 6px / 11px 11px no-repeat,
+                         linear-gradient(to bottom, transparent 21px, #000 21px, #000 23px, transparent 23px),
+                         linear-gradient(to bottom, #fff 3px, transparent 3px, transparent 20px, #fff 20px),
+                         linear-gradient(to right, #fff 2px, transparent 2px, transparent calc(100% - 2px), #fff calc(100% - 2px)),
+                         repeating-linear-gradient(to bottom, #222 1px, #fff 1px, #fff 2px, #222 2px, #222 3px), #fff;
+            --windowShadow: 0 0 0 1px #000, 2px 2px 0 #000;
+            font-family: "Chicago", monospace;
+            -webkit-font-smoothing: none;
+          }
+
+          /* Main widget container */
+          .nowplaying {
+            width: 420px;
+            height: 180px; /* Adjusted height slightly if needed, check rendering */
+            position: relative;
+            padding: 30px 5px 10px 15px;
+            box-sizing: border-box;
+            display: flex;
+            flex-wrap: wrap; /* Keep wrap just in case, but content-area should manage flow */
+            align-items: flex-start; /* Align items to the top */
+            background: var(--windowBg);
+            box-shadow: var(--windowShadow);
+            border-radius: 2px;
+            cursor: default !important;
+            z-index: 999;
+          }
+
+          /* Background pattern for the main content area */
+          .nowplaying:before {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 24px);
+            background: var(--lightBg);
+            z-index: -1;
+          }
+
+          /* Header title */
+          h3 {
+            margin: 0;
+            position: absolute;
+            top: 0;
+            font-size: 13px;
+            font-weight: 600;
+            height: 21px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: auto;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 2px 5px 0;
+            background: #fff;
+            color: #000; /* Added: Ensure title text is black */
+          }
+
+          /* Album art container */
+          .album-container {
+            width: 100px;
+            margin-left: 10px;
+            margin-right: 20px;
+            margin-top: 20px;
+            box-shadow: 0 0 0 1px #000;
+            flex-shrink: 0;
+          }
+
+          .album-art {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block; /* Prevents potential small gap under image */
+            filter: saturate(0) brightness(1.15) url(#dither);
+          }
+
+          /* Track info container */
+          .track-info {
+            flex-grow: 1;
+            padding: 0 10px 10px 10px; /* Adjusted padding - removed top padding */
+            text-align: center;
+            margin-top: 10px;
+            width: 100%; /* Changed: Make it fill the right column */
+          }
+
+          .track-display {
+            background: var(--darkBg);
+            height: 78px; /* Keep height or adjust as needed */
+            display: grid;
+            place-content: center;
+            border: 2px inset #ccc;
+          }
+
+          /* Track and artist text */
+          h4 {
+            margin: 0;
+            display: block;
+            color: #fff;
+            font-size: 10px;
+            line-height: 1.5;
+          }
+
+          h4#song {
+            color: #ccc;
+          }
+
+          /* Control buttons container */
+          .button-row {
+            display: flex;
+            justify-content: space-between;
+            /* width: 100%; REMOVED - width comes from parent */
+            padding: 0 10px 0 10px; /* Adjusted padding to align with track info */
+            margin-bottom: 10px; /* Added margin for spacing below track info */
+          }
+
+          /* Control button styling */
+          .control-button {
+            font-family: "Chicago";
+            font-size: 16px;
+            line-height: 1.5;
+            width: calc(25% - 6px); /* Keep width relative to button row */
+            border: none;
+            box-shadow: inset 0 0 0 1px #333, 0 0 0 2px #fff, 0 0 0 5px #333;
+            border-radius: 3px;
+            cursor: pointer;
+            text-align: center;
+            padding: 2px 0;
+          }
+
+          /* Layout containers */
+          .content-area {
+            display: flex;
+            width: 100%;
+            align-items: flex-start; /* Align album art and right column to top */
+          }
+
+          .right-column {
+            display: flex;
+            flex-direction: column;
+            flex: 1; /* Takes remaining space */
+            height: 100px; /* Match album art height */
+            justify-content: space-between; /* Space track info and buttons */
+          }
+
+          /* Dithering Filter SVG */
+          svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+          }
+        </style>
+
+        <svg width="0" height="0">
+          <filter id="dither">
+            <feImage height="4" width="4" xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAA+UlEQVR42gXBERTCUABA0X/OYDAYDAZBEAyCIBgMgiAIgiAYBINgEAwGgyAIBsFgMAiCIAiCIAgGQTAYDAaDIAiCwWDwulcIIXg8HgwGA36/H4qi8Hq9sCyLtm0Rm82G0WjE5XJhvV4ThiHT6ZT7/U4QBIhut0tVVaiqSpZl9Pt9vt8vnU6HsiwRh8OB5XLJfr9nNptxPp9xXZckSbBtGyHLMs/nE9M0aZoGSZJI05ThcEhd14jdbsdkMuF2u+H7PtvtlvF4zPV6xfM8hGEYfD4fdF2nKAp6vR7v9xtN08jzHHE6nVitVsRxzGKx4Hg84jgOURQxn8/5A7oKnYRU4EpfAAAAAElFTkSuQmCC'></feImage>
+            <fetile></fetile>
+            <fecomposite in='SourceGraphic' k1='0' k2='1' k3='1' k4='-0.5' operator='arithmetic'></fecomposite>
+            <fecomponenttransfer>
+              <fefuncr tablevalues='0 1' type='discrete'></fefuncr>
+              <fefuncg tablevalues='0 1' type='discrete'></fefuncg>
+              <fefuncb tablevalues='0 1' type='discrete'></fefuncb>
+            </fecomponenttransfer>
+          </filter>
+        </svg>
+
+        <a href="[https://open.spotify.com/track/](https://open.spotify.com/track/){{ track_id }}" target="_blank">
+          <div class="nowplaying">
+            <h3>Now Playing</h3>
+
+            <div class="content-area">
+              <div class="album-container">
+                <img class="album-art" src="data:image/png;base64,{{ base_64_track_image }}" alt="{{ track_name }} by {{ track_artist }}">
+              </div>
+
+              <div class="right-column">
+                <div class="track-info">
+                  <div class="track-display">
+                    <h4 id="artist">{{ track_artist }}</h4>
+                    <h4 id="song">{{ track_name }}</h4>
+                  </div>
+                </div>
+
+                <div class="button-row">
+                  <button class="control-button">⏮</button>
+                  <button class="control-button">▶</button>
+                  <button class="control-button">⏸</button>
+                  <button class="control-button">⏭</button>
+                </div>
+              </div>
+              </div>
+            </div>
+        </a>
+      </div>
+    </foreignObject>
+  </svg>
