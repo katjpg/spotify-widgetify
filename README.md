@@ -134,8 +134,6 @@ The widget can be customized using URL parameters:
 | `theme` | Widget theme | `default` | `default`, `vinyl`, `ipod`, `retro`, `windowsxp` |
 | `style` | Color scheme | `light` | `light`, `dark` (Note: not all themes support both styles) |
 | `color` | Custom color | Theme default | Any hex color code without # (e.g., `1DB954`) |
-| `eq_color` | Equalizer color | `1ED760` | Any hex color code without # or `rainbow` or `none` |
-| `spin` | Enable spinning for album art | `false` | `true`, `false` (Only works with compatible themes) |
 
 ### 8.2. Theme-Specific Notes
 
