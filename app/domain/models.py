@@ -1,16 +1,15 @@
-from typing import TypedDict, Optional
+from typing import Annotated
 from enum import Enum
-from dataclasses import dataclass
+from pydantic import BaseModel, Field, field_validator
+from pydantic.functional_validators import AfterValidator
 
 
 class ThemeStyle(str, Enum):
-    """theme light/dark mode style"""
     LIGHT = "light"
     DARK = "dark"
 
 
 class ThemeType(str, Enum):
-    """available theme types"""
     DEFAULT = "default"
     VINYL = "vinyl"
     IPOD = "ipod"
@@ -21,44 +20,77 @@ class ThemeType(str, Enum):
     WINDOWSXP = "windowsxp"
 
 
-class Track(TypedDict):
-    """track data structure"""
-    name: str
-    artist: str
-    album_image: str
-    uri: str
-    id: str
+def _validate_eq_color(v: str) -> str:
+    """Validate equalizer color - accepts hex, 'rainbow', or 'none'."""
+    if v.lower() in ('rainbow', 'none'):
+        return v.lower()
+    v = v.lstrip('#')
+    if len(v) not in (3, 6) or not all(c in '0123456789ABCDEFabcdef' for c in v):
+        raise ValueError('Invalid hex color')
+    return v
 
 
-@dataclass
-class WidgetConfig:
-    """configuration for widget rendering"""
-    theme: ThemeType
-    style: ThemeStyle
-    color: Optional[str] = None
+EqColor = Annotated[str, AfterValidator(_validate_eq_color)]
+
+
+class Track(BaseModel):
+    name: str = Field(default="Not Playing")
+    artist: str = Field(default="")
+    album_image: str = Field(default="")
+    uri: str = Field(default="")
+    id: str = Field(default="")
+
+
+# themes that support custom colors
+COLOR_SUPPORTED_THEMES = {ThemeType.IPOD, ThemeType.VINYL, ThemeType.DEFAULT}
+
+
+class WidgetConfig(BaseModel):
+    theme: ThemeType = ThemeType.DEFAULT
+    style: ThemeStyle = ThemeStyle.LIGHT
+    color: str | None = None
     spin: bool = False
-    eq_color: str = "1ED760"
-    
+    eq_color: EqColor = "1ED760"
+
+    @field_validator('color')
     @classmethod
-    def from_query_params(cls, 
-                         theme: str = "default", 
-                         style: str = "light", 
-                         color: Optional[str] = None,
-                         spin: bool = False, 
-                         eq_color: str = "1ED760") -> "WidgetConfig":
-        """create config from query parameters"""
-        theme_type = ThemeType(theme)
-        
-        # windows98 theme only has light style
-        theme_style = ThemeStyle.LIGHT if theme_type == ThemeType.WINDOWS98 else ThemeStyle(style)
-        
-        # color only available for specific themes
+    def validate_color(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
+        v = v.lstrip('#')
+        if len(v) not in (3, 6) or not all(c in '0123456789ABCDEFabcdef' for c in v):
+            return None  # invalid -> ignore
+        return v
+
+    @classmethod
+    def from_query_params(
+        cls,
+        theme: str = "default",
+        style: str = "light",
+        color: str | None = None,
+        spin: bool = False,
+        eq_color: str = "1ED760"
+    ) -> "WidgetConfig":
+        """Create config from URL query parameters."""
+        try:
+            theme_type = ThemeType(theme.lower())
+        except ValueError:
+            theme_type = ThemeType.DEFAULT
+
+        # windows98 only supports light style
+        if theme_type == ThemeType.WINDOWS98:
+            theme_style = ThemeStyle.LIGHT
+        else:
+            try:
+                theme_style = ThemeStyle(style.lower())
+            except ValueError:
+                theme_style = ThemeStyle.LIGHT
+
+        # color only valid for specific themes
         valid_color = None
-        if color and theme_type in [ThemeType.IPOD, ThemeType.VINYL, ThemeType.DEFAULT]:
-            # Ensure color is a valid hex code (strip leading # if present)
+        if color and theme_type in COLOR_SUPPORTED_THEMES:
             valid_color = color.lstrip('#')
-            print(f"Processing color parameter: {color} -> {valid_color}")
-        
+
         return cls(
             theme=theme_type,
             style=theme_style,
