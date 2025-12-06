@@ -1,3 +1,4 @@
+import html
 import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -200,8 +201,9 @@ async def get_github_image(
     )
 
     content = templates.get_template(template_name).render(context)
-    # fix XML entity encoding
-    content = content.replace("&", "&amp;").replace("&amp;amp;", "&amp;")
+    # decode HTML entities (&#39; -> '), then encode for XML (& -> &amp;)
+    content = html.unescape(content)
+    content = content.replace("&", "&amp;")
 
     return Response(content=content, media_type="image/svg+xml")
 
