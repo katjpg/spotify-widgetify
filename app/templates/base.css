@@ -14,3 +14,21 @@ a { text-decoration: none; }
 @keyframes spin {
     100% { transform: rotate(360deg); }
 }
+
+/* Marquee animation - scroll left w/ pauses, then reverse */
+@keyframes marquee {
+    0%, 15% { transform: translateX(0); }
+    85%, 100% { transform: translateX(var(--marquee-distance, -50%)); }
+}
+
+.marquee-wrapper {
+    overflow: hidden;
+    position: relative;
+}
+
+.marquee {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 18s ease-in-out infinite alternate;
+    animation-delay: 3s;
+}

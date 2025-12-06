@@ -134,9 +134,7 @@
             max-width: 190px;
             display: flex;
             align-items: center;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
+            --marquee-distance: calc(-100% + 190px);
           }
           
           /* Buttons container */
@@ -199,12 +197,16 @@
                 <div class="input-fields">
                   <div class="field">
                     <div class="field-label">Artist:</div>
-                    <div class="field-input">{{ track_artist }}</div>
+                    <div class="field-input marquee-wrapper">
+                      <span class="{% if marquee_track_artist %}marquee{% endif %}">{{ track_artist }}</span>
+                    </div>
                   </div>
-                  
+
                   <div class="field">
                     <div class="field-label">Title:</div>
-                    <div class="field-input">{{ track_name }}</div>
+                    <div class="field-input marquee-wrapper">
+                      <span class="{% if marquee_track_name %}marquee{% endif %}">{{ track_name }}</span>
+                    </div>
                   </div>
                 </div>
                 

@@ -221,27 +221,23 @@
                 .track-name {
                     font-size: 12px;
                     font-weight: 500;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                    overflow: hidden;
                     max-width: 160px;
                     color: white;
                     margin-bottom: 2px;
                     display: block;
                     width: 100%;
                     text-align: center;
+                    --marquee-distance: calc(-100% + 160px);
                 }
-                
+
                 .track-artist {
                     font-size: 10px;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                    overflow: hidden;
                     max-width: 160px;
                     color: rgba(255, 255, 255, 0.6);
                     display: block;
                     width: 100%;
                     text-align: center;
+                    --marquee-distance: calc(-100% + 160px);
                 }
             </style>
             
@@ -261,8 +257,12 @@
                             </div>
                             <img class="cover" src="data:image/png;base64,{{ base_64_track_image }}" alt="{{ track_name }} by {{ track_artist }}"/>
                             <div class="track-info">
-                                <div class="track-name">{{ track_name }}</div>
-                                <div class="track-artist">{{ track_artist }}</div>
+                                <div class="track-name marquee-wrapper">
+                                    <span class="{% if marquee_track_name %}marquee{% endif %}">{{ track_name }}</span>
+                                </div>
+                                <div class="track-artist marquee-wrapper">
+                                    <span class="{% if marquee_track_artist %}marquee{% endif %}">{{ track_artist }}</span>
+                                </div>
                             </div>
                         </div>
                         

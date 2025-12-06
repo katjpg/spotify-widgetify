@@ -136,23 +136,19 @@
             font-size: 20px;
             font-weight: 500;
             color: {{ css.title_color }};
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
             max-width: 160px;
             padding: 0 10px;
+            --marquee-distance: calc(-100% + 160px);
           }
-          
+
           /* Artist Name */
           .track-artist {
             font-size: 14px;
             color: {{ css.subtitle_color }};
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
             max-width: 160px;
             margin-top: 4px;
             padding: 0 10px;
+            --marquee-distance: calc(-100% + 160px);
           }
           
         </style>
@@ -196,8 +192,12 @@
               
               <!-- Track Information at the bottom -->
               <div class="track-info">
-                <div class="track-name">{{ track_name }}</div>
-                <div class="track-artist">{{ track_artist }}</div>
+                <div class="track-name marquee-wrapper">
+                  <span class="{% if marquee_track_name %}marquee{% endif %}">{{ track_name }}</span>
+                </div>
+                <div class="track-artist marquee-wrapper">
+                  <span class="{% if marquee_track_artist %}marquee{% endif %}">{{ track_artist }}</span>
+                </div>
               </div>
             </div>
           </main>

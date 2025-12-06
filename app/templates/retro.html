@@ -85,17 +85,15 @@
           .music-name {
             font-size: 16px;
             font-weight: bold;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
+            max-width: 160px;
+            --marquee-distance: calc(-100% + 160px);
           }
-          
+
           .music-artist {
             font-size: 14px;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
             color: {{ css.subtitle_color }};
+            max-width: 160px;
+            --marquee-distance: calc(-100% + 160px);
           }
           
           /* Equalizer visualization */
@@ -286,8 +284,12 @@
                   <div class="now-playing">
                     <span class="disc-icon">●</span> NOW PLAYING
                   </div>
-                  <div class="music-name">{{ track_name }}</div>
-                  <div class="music-artist">{{ track_artist }}</div>
+                  <div class="music-name marquee-wrapper">
+                    <span class="{% if marquee_track_name %}marquee{% endif %}">{{ track_name }}</span>
+                  </div>
+                  <div class="music-artist marquee-wrapper">
+                    <span class="{% if marquee_track_artist %}marquee{% endif %}">{{ track_artist }}</span>
+                  </div>
                 </div>
                 
                 <!-- Equalizer Bars -->

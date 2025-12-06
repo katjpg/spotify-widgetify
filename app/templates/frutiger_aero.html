@@ -120,19 +120,15 @@
             font-weight: bold;
             color: #2c3236;
             margin-bottom: 3px;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
             max-width: 260px;
+            --marquee-distance: calc(-100% + 260px);
           }
           
           .track-artist {
             font-size: 10pt;
             color: rgb(63, 149, 235);
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
             max-width: 260px;
+            --marquee-distance: calc(-100% + 260px);
           }
           
           /* Spectrograph styles */
@@ -289,8 +285,12 @@
                 
                 <!-- Track info -->
                 <div class="track-info">
-                  <div class="track-name">{{ track_name }}</div>
-                  <div class="track-artist">{{ track_artist }}</div>
+                  <div class="track-name marquee-wrapper">
+                    <span class="{% if marquee_track_name %}marquee{% endif %}">{{ track_name }}</span>
+                  </div>
+                  <div class="track-artist marquee-wrapper">
+                    <span class="{% if marquee_track_artist %}marquee{% endif %}">{{ track_artist }}</span>
+                  </div>
                 </div>
               </div>
               
