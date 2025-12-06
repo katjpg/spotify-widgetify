@@ -1,43 +1,55 @@
 import base64
-from pathlib import Path
-import httpx
-from typing import Dict, Optional
+import logging
+from collections import OrderedDict
 from functools import lru_cache
+from pathlib import Path
+
+import httpx
+
+logger = logging.getLogger(__name__)
 
 
 class Base64Encoder:
-    """handles image encoding with caching"""
-    
-    def __init__(self, static_dir: Path):
-        """initialize with static directory path"""
+    """Encodes images to base64 with LRU caching."""
+
+    def __init__(self, static_dir: Path, max_cache_size: int = 100):
         self.static_dir = static_dir
-        self._cache: Dict[str, str] = {}
-        
-    async def encode_url(self, url: str) -> str:
-        """encode remote image to base64 with caching"""
-        # return from cache if available
+        self._cache: OrderedDict[str, str] = OrderedDict()
+        self.max_cache_size = max_cache_size
+
+    async def encode_url(self, url: str, http_client: httpx.AsyncClient | None = None) -> str:
+        """Fetch remote image and encode to base64."""
         if url in self._cache:
+            self._cache.move_to_end(url)  # LRU update
             return self._cache[url]
-            
-        # fetch and encode remote image
-        async with httpx.AsyncClient() as client:
-            try:
-                response = await client.get(url, timeout=3.0)
-                if response.status_code == 200:
-                    encoded = base64.b64encode(response.content).decode('ascii')
-                    # cache for future requests
-                    self._cache[url] = encoded
-                    return encoded
-            except (httpx.RequestError, httpx.TimeoutException):
-                pass
-                
-        # fallback to default placeholder
+
+        client = http_client or httpx.AsyncClient()
+        should_close = http_client is None
+
+        try:
+            response = await client.get(url, timeout=3.0)
+            if response.status_code == 200:
+                encoded = base64.b64encode(response.content).decode('ascii')
+                self._add_to_cache(url, encoded)
+                return encoded
+        except httpx.TimeoutException:
+            logger.warning(f"Timeout fetching image: {url}")
+        except httpx.RequestError as e:
+            logger.warning(f"Error fetching image: {e}")
+        finally:
+            if should_close:
+                await client.aclose()
+
         return self.get_default_image()
-    
-    @lru_cache(maxsize=1)    
+
+    def _add_to_cache(self, url: str, encoded: str) -> None:
+        if len(self._cache) >= self.max_cache_size:
+            self._cache.popitem(last=False)  # evict oldest
+        self._cache[url] = encoded
+
+    @lru_cache(maxsize=1)
     def get_default_image(self) -> str:
-        """generate placeholder album cover"""
-        svg = f'''
+        svg = '''
         <svg width="120" height="120" xmlns="http://www.w3.org/2000/svg">
             <rect width="120" height="120" fill="#333"/>
             <circle cx="60" cy="60" r="40" fill="#555"/>
@@ -46,16 +58,14 @@ class Base64Encoder:
         </svg>
         '''
         return base64.b64encode(svg.encode('utf-8')).decode('ascii')
-        
+
     @lru_cache(maxsize=1)
     def get_spotify_logo(self) -> str:
-        """get spotify logo from svg file"""
         try:
             svg_path = self.static_dir / "spotify.svg"
             with open(svg_path, 'rb') as f:
                 return base64.b64encode(f.read()).decode('ascii')
         except (FileNotFoundError, IOError):
-            # minimal spotify logo fallback
             svg = '''
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                 <circle cx="12" cy="12" r="12" fill="#1DB954"/>
@@ -63,16 +73,14 @@ class Base64Encoder:
             </svg>
             '''
             return base64.b64encode(svg.encode('utf-8')).decode('ascii')
-        
+
     @lru_cache(maxsize=1)
     def get_vinyl_overlay(self) -> str:
-        """get vinyl overlay from svg file"""
         try:
             svg_path = self.static_dir / "vinyl.svg"
             with open(svg_path, 'rb') as f:
                 return base64.b64encode(f.read()).decode('ascii')
         except (FileNotFoundError, IOError):
-            # fallback vinyl overlay
             svg = '''
             <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="100" cy="100" r="95" fill="#000000"/>
@@ -86,16 +94,14 @@ class Base64Encoder:
             </svg>
             '''
             return base64.b64encode(svg.encode('utf-8')).decode('ascii')
-            
+
     @lru_cache(maxsize=1)
     def get_vinyl_needle(self) -> str:
-        """get vinyl needle overlay from svg file"""
         try:
             svg_path = self.static_dir / "vinyl-needle.svg"
             with open(svg_path, 'rb') as f:
                 return base64.b64encode(f.read()).decode('ascii')
         except (FileNotFoundError, IOError):
-            # fallback vinyl needle overlay
             svg = '''
             <svg width="80" height="120" xmlns="http://www.w3.org/2000/svg">
                 <g transform="rotate(-20 40 20)">
