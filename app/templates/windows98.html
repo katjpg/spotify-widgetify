@@ -2,21 +2,9 @@
     <foreignObject width="400" height="180">
       <div xmlns="http://www.w3.org/1999/xhtml" class="container">
         <style>
-          /* Google Font Import for IBM3270-like font */
           @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap');
-          
-          /* CSS Reset */
-          div, span, h1, p, a, img, button {
-            margin: 0;
-            padding: 0;
-            border: 0;
-            font-size: 100%;
-            font: inherit;
-            vertical-align: baseline;
-            box-sizing: border-box;
-          }
-          a { text-decoration: none; }
-          
+          {% include "base.css" %}
+
           /* Win98 Player Container */
           .player {
             position: relative;

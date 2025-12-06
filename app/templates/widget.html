@@ -2,18 +2,8 @@
     <foreignObject width="495" height="160">
       <div xmlns="http://www.w3.org/1999/xhtml" class="container">
         <style>
-          /* CSS Reset */
-          div, span, h1, p, a, img {
-            margin: 0;
-            padding: 0;
-            border: 0;
-            font-size: 100%;
-            font: inherit;
-            vertical-align: baseline;
-            box-sizing: border-box;
-          }
-          a { text-decoration: none; }
-          
+          {% include "base.css" %}
+
           /* Main Widget Container */
           main {
             display: flex;
@@ -172,10 +162,6 @@
           .bar:nth-child(10) { animation-delay: 1s; }
           {% endif %}
           
-          /* Animations */
-          @keyframes spin {
-            100% { transform: rotate(360deg); }
-          }
         </style>
         
         <a href="https://open.spotify.com/track/{{ track_id }}" target="_blank">
