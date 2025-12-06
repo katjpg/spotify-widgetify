@@ -238,14 +238,14 @@
             margin-bottom: 5px;
             max-width: 140px;
             width: 100%;
-            --marquee-distance: calc(-100% + 140px);
+            --marquee-distance: min(0px, calc(-100% + 140px));
           }
           .player .track-artist {
             font-size: 14px;
             color: rgba(255, 255, 255, 0.6);
             width: 100%;
             max-width: 140px;
-            --marquee-distance: calc(-100% + 140px);
+            --marquee-distance: min(0px, calc(-100% + 140px));
           }
   
           /* Spectrograph Visualization */
@@ -513,10 +513,10 @@
                 <div class="album-cover" style="background-image: url('data:image/png;base64,{{ base_64_track_image }}');"></div>
                 <div class="track-info">
                   <div class="track-name marquee-wrapper">
-                    <span class="{% if marquee_track_name %}marquee{% endif %}">{{ track_name }}</span>
+                    <span class="marquee">{{ track_name }}</span>
                   </div>
                   <div class="track-artist marquee-wrapper">
-                    <span class="{% if marquee_track_artist %}marquee{% endif %}">{{ track_artist }}</span>
+                    <span class="marquee">{{ track_artist }}</span>
                   </div>
                 </div>
               </div>

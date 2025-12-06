@@ -112,7 +112,7 @@
             font-size: 10px;
             line-height: 1.5;
             max-width: 180px;
-            --marquee-distance: calc(-100% + 180px);
+            --marquee-distance: min(0px, calc(-100% + 180px));
           }
 
           h4#song {
@@ -191,10 +191,10 @@
                 <div class="track-info">
                   <div class="track-display">
                     <h4 id="artist" class="marquee-wrapper">
-                      <span class="{% if marquee_track_artist %}marquee{% endif %}">{{ track_artist }}</span>
+                      <span class="marquee">{{ track_artist }}</span>
                     </h4>
                     <h4 id="song" class="marquee-wrapper">
-                      <span class="{% if marquee_track_name %}marquee{% endif %}">{{ track_name }}</span>
+                      <span class="marquee">{{ track_name }}</span>
                     </h4>
                   </div>
                 </div>

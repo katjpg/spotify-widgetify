@@ -138,7 +138,7 @@
             color: {{ css.title_color }};
             max-width: 160px;
             padding: 0 10px;
-            --marquee-distance: calc(-100% + 160px);
+            --marquee-distance: min(0px, calc(-100% + 140px));
           }
 
           /* Artist Name */
@@ -148,7 +148,7 @@
             max-width: 160px;
             margin-top: 4px;
             padding: 0 10px;
-            --marquee-distance: calc(-100% + 160px);
+            --marquee-distance: min(0px, calc(-100% + 140px));
           }
           
         </style>
@@ -193,10 +193,10 @@
               <!-- Track Information at the bottom -->
               <div class="track-info">
                 <div class="track-name marquee-wrapper">
-                  <span class="{% if marquee_track_name %}marquee{% endif %}">{{ track_name }}</span>
+                  <span class="marquee">{{ track_name }}</span>
                 </div>
                 <div class="track-artist marquee-wrapper">
-                  <span class="{% if marquee_track_artist %}marquee{% endif %}">{{ track_artist }}</span>
+                  <span class="marquee">{{ track_artist }}</span>
                 </div>
               </div>
             </div>
