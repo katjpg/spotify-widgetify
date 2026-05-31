@@ -60,14 +60,14 @@ minute or two after playback changes.
 
 | Theme | `theme=` | `style` | `color` | Preview |
 |-------|----------|---------|---------|---------|
-| **Default** | `default` | light / dark | yes | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=default&style=dark" alt="Default theme" width="360" /></a> |
-| **Vinyl** | `vinyl` | light / dark | yes | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=vinyl&style=dark" alt="Vinyl theme" width="360" /></a> |
-| **iPod** | `ipod` | light / dark | yes | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=ipod" alt="iPod theme" width="360" /></a> |
-| **Retro** | `retro` | light / dark | — | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=retro&style=dark" alt="Retro theme" width="360" /></a> |
-| **Windows 98** | `windows98` | fixed (light) | — | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=windows98" alt="Windows 98 theme" width="360" /></a> |
-| **Windows XP** | `windowsxp` | fixed | — | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=windowsxp" alt="Windows XP theme" width="360" /></a> |
-| **Frutiger Aero** | `frutiger_aero` | fixed | — | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=frutiger_aero" alt="Frutiger Aero theme" width="360" /></a> |
-| **Macintosh** | `macintosh` | fixed | — | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=macintosh" alt="Macintosh theme" width="360" /></a> |
+| **Default** | `default` | light / dark | yes | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=default&style=dark" alt="Default theme" width="480" /></a> |
+| **Vinyl** | `vinyl` | light / dark | yes | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=vinyl&style=dark" alt="Vinyl theme" width="480" /></a> |
+| **iPod** | `ipod` | light / dark | yes | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=ipod" alt="iPod theme" width="480" /></a> |
+| **Retro** | `retro` | light / dark | — | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=retro&style=dark" alt="Retro theme" width="480" /></a> |
+| **Windows 98** | `windows98` | fixed (light) | — | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=windows98" alt="Windows 98 theme" width="480" /></a> |
+| **Windows XP** | `windowsxp` | fixed | — | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=windowsxp" alt="Windows XP theme" width="480" /></a> |
+| **Frutiger Aero** | `frutiger_aero` | fixed | — | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=frutiger_aero" alt="Frutiger Aero theme" width="480" /></a> |
+| **Macintosh** | `macintosh` | fixed | — | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=macintosh" alt="Macintosh theme" width="480" /></a> |
 
 > Previews show the track currently playing on the hosted demo account.
 
