@@ -1,28 +1,25 @@
-from pydantic import Field, field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
+
+from pydantic import SecretStr
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    """Application settings loaded from environment variables."""
+    """Spotify credentials and API endpoints, read from SPOTIFY_-prefixed env vars (or .env)."""
 
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(
+        env_prefix="SPOTIFY_",  # reads SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, ...
+        env_file=".env",  # local only; the host injects real env vars
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
 
-    client_id: str = Field(default="", alias="CLIENT_ID")
-    client_secret: str = Field(default="", alias="CLIENT_SECRET")
-    refresh_token: str = Field(default="", alias="REFRESH_TOKEN")
+    client_id: str = ""
+    client_secret: SecretStr = SecretStr("")
+    refresh_token: SecretStr = SecretStr("")
 
     spotify_api_url: str = "https://api.spotify.com/v1"
     auth_api_url: str = "https://accounts.spotify.com/api/token"
-    default_eq_color: str = "1ED760"
-
-    @field_validator('default_eq_color')
-    @classmethod
-    def validate_hex_color(cls, v: str) -> str:
-        v = v.lstrip('#')
-        if len(v) not in (3, 6) or not all(c in '0123456789ABCDEFabcdef' for c in v):
-            raise ValueError('Invalid hex color format')
-        return v
 
 
 @lru_cache

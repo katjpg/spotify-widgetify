@@ -1,37 +1,26 @@
 from typing import Any
 
 from app.themes.base import BaseTheme, ThemeCSS
+from app.themes.palette import MacClassic
 
 
 class MacintoshTheme(BaseTheme):
-    """Classic 1983 Macintosh theme."""
+    """Classic 1984 Macintosh with monochrome Chicago type."""
+
+    template = "macintosh.html"
 
     @property
     def css(self) -> ThemeCSS:
         return ThemeCSS(
-            background_color="#E8E8E8",
-            title_color="#000000",
-            subtitle_color="#FFFFFF",
+            background_color=MacClassic.WINDOW_GREY,
+            title_color=MacClassic.INK,
+            subtitle_color=MacClassic.PAPER,
             album_border_radius="0px",
             container_padding="0px",
-            text_font="'Chicago', monospace"
+            text_font="'Chicago', monospace",
         )
 
     def transform_data(self, data: dict[str, Any]) -> dict[str, Any]:
         result = data.copy()
-        result["css"] = self.css
-
-        result["spin"] = False
-        result["show_equalizer"] = False
-        result["theme_name"] = self.name
-        result["template_name"] = "macintosh.html"
-
+        result["css"] = dict(self.css)
         return result
-
-    @property
-    def supports_equalizer(self) -> bool:
-        return False
-
-    @property
-    def supports_spin(self) -> bool:
-        return False

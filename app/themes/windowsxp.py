@@ -1,47 +1,37 @@
 from typing import Any
 
 from app.themes.base import BaseTheme, ThemeCSS
+from app.themes.palette import Wmp11
 
 
 class WindowsXPTheme(BaseTheme):
-    """Windows XP Media Player 11 theme."""
+    """Windows XP Media Player 11 with a glossy blue console."""
+
+    template = "windowsxp.html"
 
     @property
     def css(self) -> ThemeCSS:
         return ThemeCSS(
-            background_color="#394152",
-            title_color="#FFFFFF",
-            subtitle_color="#CCCCCC",
+            background_color=Wmp11.BACKGROUND,
+            title_color=Wmp11.TITLE,
+            subtitle_color=Wmp11.SUBTITLE,
             album_border_radius="0px",
             container_padding="0px",
-            text_font="'Tahoma', sans-serif"
+            text_font="'Tahoma', sans-serif",
         )
 
     def transform_data(self, data: dict[str, Any]) -> dict[str, Any]:
         result = data.copy()
-        result["css"] = self.css
+        css = dict(self.css)
 
-        result["spin"] = False
-        result["show_equalizer"] = False
-        result["theme_name"] = self.name
-        result["template_name"] = "windowsxp.html"
+        css["player_active_white"] = Wmp11.ACTIVE_WHITE
+        css["player_disable_white"] = Wmp11.DISABLE_WHITE
+        css["gradient_top"] = Wmp11.GRADIENT_TOP
+        css["gradient_middle"] = Wmp11.GRADIENT_MIDDLE
+        css["gradient_bottom_1"] = Wmp11.GRADIENT_BOTTOM_1
+        css["gradient_bottom_2"] = Wmp11.GRADIENT_BOTTOM_2
+        css["button_blue"] = Wmp11.BUTTON_BLUE
+        css["control_shadow"] = Wmp11.CONTROL_SHADOW
 
-        # wmp-specific vars
-        result["css"]["player_active_white"] = "rgb(239, 247, 255)"
-        result["css"]["player_disable_white"] = "rgba(239, 247, 255, 0.3)"
-        result["css"]["gradient_top"] = "rgb(0, 0, 0)"
-        result["css"]["gradient_middle"] = "rgb(57, 65, 82)"
-        result["css"]["gradient_bottom_1"] = "rgb(102, 108, 132)"
-        result["css"]["gradient_bottom_2"] = "rgb(17, 20, 25)"
-        result["css"]["button_blue"] = "#00109c"
-        result["css"]["control_shadow"] = "0 0 5px rgba(0, 82, 198, 0.5)"
-
+        result["css"] = css
         return result
-
-    @property
-    def supports_equalizer(self) -> bool:
-        return False
-
-    @property
-    def supports_spin(self) -> bool:
-        return False
