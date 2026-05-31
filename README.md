@@ -1,184 +1,207 @@
 # Spotify Widgetify
 
-Display your currently playing Spotify track with a customizable widget for GitHub README profiles and websites.
+Displays your currently playing Spotify track as an embeddable and customizable SVG widget for GitHub READMEs and
+websites.
+
+<div align="center">
+  <a href="https://spotify-widgetify.vercel.app/link">
+    <img src="https://spotify-widgetify.vercel.app/github?theme=default&style=dark" alt="Spotify Now Playing" width="440" />
+  </a>
+</div>
 
 ## Table of Contents
-1. [Introduction](#1-introduction)
-2. [Features](#2-features)
-3. [Quick Start](#3-quick-start)
-4. [Prerequisites](#4-prerequisites)
-5. [Setup Guide](#5-setup-guide)
-6. [GitHub README Integration](#6-github-readme-integration)
-7. [Theme Showcase](#7-theme-showcase)
-8. [Customization Options](#8-customization-options)
-9. [Troubleshooting](#9-troubleshooting)
-10. [License](#10-license)
-11. [Credits](#11-credits)
 
-## 1. Introduction
+- [Spotify Widgetify](#spotify-widgetify)
+  - [Table of Contents](#table-of-contents)
+  - [1. How it works](#1-how-it-works)
+  - [2. Features](#2-features)
+  - [3. Themes](#3-themes)
+  - [4. Embedding in a README](#4-embedding-in-a-readme)
+  - [5. Customization](#5-customization)
+  - [6. Self-hosting](#6-self-hosting)
+    - [Prerequisites](#prerequisites)
+    - [6.1. Create a Spotify application](#61-create-a-spotify-application)
+    - [6.2. Configure credentials](#62-configure-credentials)
+    - [6.3. Get a refresh token](#63-get-a-refresh-token)
+    - [6.4. Run locally](#64-run-locally)
+    - [6.5. Deploy to Vercel](#65-deploy-to-vercel)
+  - [7. Architecture](#7-architecture)
+  - [8. Troubleshooting](#8-troubleshooting)
+    - [**Shows "Not Playing".**](#shows-not-playing)
+    - [**Stuck on an old track.**](#stuck-on-an-old-track)
+    - [**Token script cannot capture the redirect.**](#token-script-cannot-capture-the-redirect)
+  - [9. License](#9-license)
+  - [10. Credits](#10-credits)
 
-Spotify Widgetify is a web widget that displays your currently playing Spotify track, designed to be embedded in GitHub profile READMEs and websites. It automatically updates to reflect your currently playing or recently played tracks on Spotify.
+## 1. How it works
 
-![Spotify Widgetify Demo](https://spotify-widgetify.vercel.app/github?theme=default&style=dark)
+Spotify Widgetify is a web widget that displays your currently playing Spotify track, designed to be embedded in GitHub profile READMEs and websites. It automatically updates to reflect your currently playing or recently played tracks on Spotify. 
+
+1. Refresh a Spotify access token, cached until it expires.
+2. Fetch the currently playing track, falling back to the most recently played, then to a
+   "Not Playing" state.
+3. Map the Spotify response to a `Track` model and derive a color palette from the album art.
+4. Apply the requested theme and render a Jinja2 SVG template.
+
+The rendered SVG inlines its assets as base64 and carries its CSS in a `<style>` block. It runs no
+JavaScript and makes no external requests, so it renders the same in a README or offline.
+
+GitHub serves widget images through a caching proxy, so a profile can show the previous track for a
+minute or two after playback changes.
 
 ## 2. Features
 
-- Real-time display of your current or recently played Spotify tracks
-- Multiple theme options: Default, Vinyl, iPod, Retro, Windows XP
-- Light and dark mode support for most themes
-- Customizable colors for select themes
-- Responsive design that works in GitHub READMEs and websites
-- Automatic updates when your music changes
+- Eight themes inspired by defining GUI eras, including iPod (skeuomorphic design), Windows 98 (Windows Classic), Macintosh (Platinum), and more.
+- Current track, or the most recently played when nothing is on.
+- `light` and `dark` styles on the themes that support both.
+- Custom accent color via `?color=`.
 
-## 3. Quick Start
+## 3. Themes
 
-1. Set up your Spotify application credentials
-2. Deploy the application or use the hosted version
-3. Add the widget to your GitHub README using the embed code
-4. Customize the appearance with theme, style, and color parameters
+| Theme | `theme=` | `style` | `color` | Preview |
+|-------|----------|---------|---------|---------|
+| **Default** | `default` | light / dark | yes | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=default&style=dark" alt="Default theme" width="360" /></a> |
+| **Vinyl** | `vinyl` | light / dark | yes | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=vinyl&style=dark" alt="Vinyl theme" width="360" /></a> |
+| **iPod** | `ipod` | light / dark | yes | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=ipod" alt="iPod theme" width="360" /></a> |
+| **Retro** | `retro` | light / dark | — | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=retro&style=dark" alt="Retro theme" width="360" /></a> |
+| **Windows 98** | `windows98` | fixed (light) | — | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=windows98" alt="Windows 98 theme" width="360" /></a> |
+| **Windows XP** | `windowsxp` | fixed | — | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=windowsxp" alt="Windows XP theme" width="360" /></a> |
+| **Frutiger Aero** | `frutiger_aero` | fixed | — | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=frutiger_aero" alt="Frutiger Aero theme" width="360" /></a> |
+| **Macintosh** | `macintosh` | fixed | — | <a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=macintosh" alt="Macintosh theme" width="360" /></a> |
 
-## 4. Prerequisites
+> Previews show the track currently playing on the hosted demo account.
 
-- Spotify account
-- Spotify Developer application with API credentials
-- GitHub account (for README embedding)
-- Vercel account (optional, for deployment)
+## 4. Embedding in a README
 
-## 5. Setup Guide
-
-### 5.1. Create a Spotify Developer Application
-
-1. Go to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/)
-2. Log in with your Spotify account
-3. Click "Create App"
-4. Fill in the required information:
-   - App name: "Spotify Widgetify" (or your preferred name)
-   - App description: Brief description of your widget
-   - Redirect URI: The URL where your application will be hosted (e.g., `https://your-app-name.vercel.app/callback`)
-5. Save your `Client ID` and `Client Secret` for the next steps
-
-### 5.2. Set Up Environment Variables
-
-Create a `.env` file with the following variables:
-```
-CLIENT_ID=your_spotify_client_id
-CLIENT_SECRET=your_spotify_client_secret
-REFRESH_TOKEN=your_spotify_refresh_token
-```
-
-To obtain a `REFRESH_TOKEN`:
-1. Create an authorization URL with your client ID:
-```
-https://accounts.spotify.com/authorize?client_id=YOUR_CLIENT_ID&response_type=code&scope=user-read-currently-playing,user-read-recently-played&redirect_uri=YOUR_REDIRECT_URI
-```
-2. Visit the URL and authorize the application
-3. You'll be redirected to your redirect URI with a code parameter
-4. Exchange this code for a refresh token using the Spotify API's token endpoint
-
-### 5.3. Deploy the Application
-
-#### Option A: Deploy to Vercel
-
-1. Fork this repository
-2. Connect your fork to Vercel
-3. Configure the environment variables in the Vercel dashboard
-4. Deploy the application
-
-#### Option B: Run Locally
-
-1. Clone the repository
-2. Install dependencies: `pip install -r requirements.txt`
-3. Run the application: `uvicorn app.main:app --reload`
-
-## 6. GitHub README Integration
-
-Add the widget to your GitHub profile README using the following Markdown:
+Embed the widget using `/github` as the `<img>` source and linking it via `/link`, which opens an embedded Spotify player for the track you're currently playing.
 
 ```markdown
 <div align="center">
-  <a href="https://your-app-url.vercel.app/link">
-    <img src="https://your-app-url.vercel.app/github?theme=default&style=dark" alt="Spotify Now Playing" width="400" />
+  <a href="https://spotify-widgetify.vercel.app/link">
+    <img src="https://spotify-widgetify.vercel.app/github?theme=ipod" alt="Spotify Now Playing" width="440" />
   </a>
 </div>
 ```
 
-Replace `your-app-url.vercel.app` with your actual deployed application URL.
+NOTE: Replace `spotify-widgetify.vercel.app` with a self-hosted deployment if needed.
 
-## 7. Theme Showcase
+| Endpoint | Returns |
+|----------|---------|
+| `/github` | The widget as `image/svg+xml`, for use in an `<img>`. |
+| `/` | The widget as an HTML page, for previewing in a browser. |
+| `/link` | An HTML page embedding the current track's Spotify player. |
 
-Below are all available themes with their corresponding embed codes:
+## 5. Customization
 
-| Theme | Preview |
-|-------|---------|
-| **Default (Light)** | <div align="center"><a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=default&style=light" alt="Default Light Theme" width="400" /></a></div> |
-| **Default (Dark)** | <div align="center"><a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=default&style=dark" alt="Default Dark Theme" width="400" /></a></div> |
-| **Vinyl** | <div align="center"><a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=vinyl&style=dark" alt="Vinyl Theme" width="400" /></a></div> |
-| **iPod** | <div align="center"><a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=ipod&style=light" alt="iPod Theme" width="400" /></a></div> |
-| **Retro** | <div align="center"><a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=retro&style=dark" alt="Retro Theme" width="400" /></a></div> |
-| **Windows XP** | <div align="center"><a href="https://spotify-widgetify.vercel.app/link"><img src="https://spotify-widgetify.vercel.app/github?theme=windowsxp" alt="Windows XP Theme" width="400" /></a></div> |
+Options are query parameters on `/github` and `/`:
 
-### TODO: Future Themes
-The following themes are planned for future implementation:
-- Windows 98
-- Frutiger Aero
-- Macintosh
+| Parameter | Default | Values | Notes |
+|-----------|---------|--------|-------|
+| `theme` | `default` | any `theme=` value in [§3](#3-themes) | Unknown values fall back to `default`. |
+| `style` | `light` | `light`, `dark` | Effective on `default`, `vinyl`, `ipod`, `retro`. Other themes render one fixed look. |
+| `color` | — | hex digits, no `#` (e.g. `609dbd`) | Custom accent for `default`, `vinyl`, `ipod`. Ignored by other themes. |
+| `eq_color` | `1ED760` | hex digits, `rainbow`, `none` | Equalizer color on themes that show one. |
 
-## 8. Customization Options
-
-The widget can be customized using URL parameters:
-
-### 8.1. Common Parameters
-
-| Parameter | Description | Default | Options |
-|-----------|-------------|---------|---------|
-| `theme` | Widget theme | `default` | `default`, `vinyl`, `ipod`, `retro`, `windowsxp` |
-| `style` | Color scheme | `light` | `light`, `dark` (Note: not all themes support both styles) |
-| `color` | Custom color | Theme default | Any hex color code without # (e.g., `1DB954`) |
-
-### 8.2. Theme-Specific Notes
-
-- **Default**: Supports light/dark modes and custom colors
-- **Vinyl**: Spinning record player with album art as the vinyl
-- **iPod**: Classic iPod-inspired design with click wheel
-- **Retro**: Pixelated retro music player with scan lines
-- **Windows XP**: Windows Media Player 11 inspired look
-
-### 8.3. Example with Custom Parameters
+Example with a custom iPod body color and no equalizer:
 
 ```markdown
-<div align="center">
-  <a href="https://your-app-url.vercel.app/link">
-    <img src="https://your-app-url.vercel.app/github?theme=ipod&style=light&color=609dbd" alt="Spotify Now Playing" width="400" />
-  </a>
-</div>
+<img src="https://spotify-widgetify.vercel.app/github?theme=ipod&color=609dbd&eq_color=none" alt="Spotify Now Playing" width="440" />
 ```
 
-## 9. Troubleshooting
+## 6. Self-hosting
 
-### 9.1. Widget Shows "Not Playing"
+### Prerequisites
 
-- Ensure you're actively playing music on Spotify
-- Check that your Spotify API credentials are correct
-- Verify that your refresh token is valid and has the correct scopes
+- Python 3.11+
+- [uv](https://docs.astral.sh/uv/)
+- A Spotify account and a Spotify Developer application
 
-### 9.2. Widget Not Updating
+### 6.1. Create a Spotify application
 
-- The widget may cache for a short period
-- Refresh your GitHub profile page
-- Add a query parameter to force a refresh: `?cache_bust=123`
+1. Open the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard) and create an app.
+2. Record the **Client ID** and **Client Secret**.
+3. Add `http://127.0.0.1:8888/callback` to the app's Redirect URIs. The token script in step 6.3
+   uses it.
 
-### 9.3. Authentication Issues
+### 6.2. Configure credentials
 
-- Double-check your CLIENT_ID, CLIENT_SECRET, and REFRESH_TOKEN
-- Ensure your Spotify Developer App has the correct redirect URI
-- Verify that you've granted the necessary permissions during authorization
+Create a `.env` file in the project root:
 
-## 10. License
+```bash
+SPOTIFY_CLIENT_ID=your_client_id
+SPOTIFY_CLIENT_SECRET=your_client_secret
+SPOTIFY_REFRESH_TOKEN=        # filled in by step 6.3
+```
 
-[MIT License](LICENSE)
+### 6.3. Get a refresh token
 
-## 11. Credits
+Run the helper script to complete the Authorization Code + PKCE flow and save `SPOTIFY_REFRESH_TOKEN` to `.env`. Make sure `SPOTIFY_CLIENT_ID` is set and the redirect URI from step 6.1 is registered.
 
-- Spotify API for providing track data
-- FastAPI for the web framework
-- Vercel for hosting capabilities
+```bash
+uv run python scripts/get_refresh_token.py
+```
+
+The script opens Spotify’s consent page, captures the redirect at `127.0.0.1:8888`, exchanges the authorization code, and saves the refresh token.
+
+
+
+### 6.4. Run locally
+
+```bash
+uv sync
+uv run uvicorn app.main:app --reload
+```
+
+Open <http://127.0.0.1:8000/?theme=ipod> for the preview, or
+<http://127.0.0.1:8000/github?theme=ipod> for the raw SVG.
+
+### 6.5. Deploy to Vercel
+
+The repository includes `vercel.json`. Import the project in Vercel, set `SPOTIFY_CLIENT_ID`,
+`SPOTIFY_CLIENT_SECRET`, and `SPOTIFY_REFRESH_TOKEN` in the project environment, and deploy. The
+widget is then served at `https://<app>.vercel.app/github`.
+
+## 7. Architecture
+
+Server-rendered SVG. No build step.
+
+```bash
+
+app/
+├── api/          # web requests
+├── schemas/      # URL query parameters
+├── domain/       # track + theme models
+├── services/     # builds widget UI via colors + rendering
+├── providers/    # Spotify client
+├── themes/       # theme styling
+├── templates/    # SVG layouts
+├── assets/       # logos/images encoded into the SVG
+└── static/       # source SVG files
+
+```
+
+## 8. Troubleshooting
+
+### **Shows "Not Playing".** 
+- Confirm music is playing and that `SPOTIFY_CLIENT_ID`,
+`SPOTIFY_CLIENT_SECRET`, and `SPOTIFY_REFRESH_TOKEN` are set. An invalid or unscoped refresh token yields an empty access token and the fallback state. 
+- The token needs the `user-read-currently-playing` and `user-read-recently-played` scopes (which the script requests).
+
+### **Stuck on an old track.** 
+- GitHub caches the image through its proxy. Append a parameter
+such as `&cb=1` to fix the cache.
+
+### **Token script cannot capture the redirect.** 
+- Confirm `http://127.0.0.1:8888/callback` is registered
+exactly in the app's Redirect URIs and that port 8888 is free.
+
+## 9. License
+
+[MIT](LICENSE)
+
+## 10. Credits
+
+- [Spotify Web API](https://developer.spotify.com/documentation/web-api) for track data
+- [FastAPI](https://fastapi.tiangolo.com/) and [Jinja2](https://jinja.palletsprojects.com/)
+- [Pillow](https://python-pillow.org/) for album-art color extraction
+- [Vercel](https://vercel.com/) for hosting
