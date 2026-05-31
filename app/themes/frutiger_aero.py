@@ -8,6 +8,7 @@ class FrutigerAeroTheme(BaseTheme):
     """Windows Vista/7 Aero glass with layered shine gradients."""
 
     template = "frutiger_aero.html"
+    marquee_chars = 24  # wide 260px marquee
 
     @property
     def css(self) -> ThemeCSS:

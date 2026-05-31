@@ -22,6 +22,7 @@ class BaseTheme(ABC):
     ] = ()  # asset keys the template needs, e.g. "vinyl_overlay"
     spins: bool = False
     equalizer: bool = False
+    marquee_chars: int = 15  # titles longer than this overflow the marquee
 
     def __init__(self, style: ThemeStyle, color: str | None = None):
         self.style = style

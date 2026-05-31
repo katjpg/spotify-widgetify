@@ -21,6 +21,7 @@ a { text-decoration: none; }
     85%, 100% { transform: translateX(var(--marquee-distance, -50%)); }
 }
 
+{% if scroll_title %}
 /* syntax angle-brackets escaped for XML; decode to the CSS color type */
 @property --edge {
     syntax: "&lt;color&gt;";
@@ -34,13 +35,17 @@ a { text-decoration: none; }
     30%, 70%  { --edge: transparent; }
     85%, 100% { --edge: black; }
 }
+{% endif %}
 
 .marquee-wrapper {
     overflow: hidden;
+    {% if scroll_title %}
+    /* fade only when the title overflows and scrolls (scroll_title set server-side) */
     -webkit-mask-image: linear-gradient(to right, var(--edge), black 12%, black 88%, var(--edge));
             mask-image: linear-gradient(to right, var(--edge), black 12%, black 88%, var(--edge));
     animation: edge-fade var(--marquee-duration, 18s) ease-in-out infinite alternate;
     animation-delay: 3s;
+    {% endif %}
 }
 
 .marquee {
