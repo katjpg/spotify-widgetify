@@ -8,7 +8,7 @@ class MacintoshTheme(BaseTheme):
     """Classic 1984 Macintosh with monochrome Chicago type."""
 
     template = "macintosh.html"
-    marquee_chars = 28  # wide marquee, small Chicago type
+    marquee_fade = False  # marquee scrolls without the edge fade
 
     @property
     def css(self) -> ThemeCSS:

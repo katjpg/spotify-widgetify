@@ -34,6 +34,7 @@ class RenderingService:
             # longer titles get proportionally longer durations for a constant scroll speed
             "marquee_duration": f"{max(12, round(len(track.title) * 0.4))}s",
             "scroll_title": len(track.title) > theme.marquee_chars,
+            "marquee_fade": theme.marquee_fade,
         }
         if "vinyl_overlay" in theme.required_assets:
             context["vinyl_svg"] = self._encoder.get_vinyl_overlay()

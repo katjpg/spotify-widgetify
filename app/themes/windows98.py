@@ -11,7 +11,7 @@ class Windows98Theme(BaseTheme):
     """Windows 98 CD player with raised-bevel chrome."""
 
     template = "windows98.html"
-    marquee_chars = 26  # wide field, monospace 12px
+    marquee_fade = False  # marquee scrolls without the edge fade
 
     @property
     def css(self) -> ThemeCSS:

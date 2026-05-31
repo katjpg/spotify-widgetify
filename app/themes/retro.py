@@ -30,6 +30,7 @@ class RetroTheme(BaseTheme):
     """CRT-era audio player with a 3D-bevelled panel and equalizer."""
 
     template = "retro.html"
+    marquee_fade = False  # marquee scrolls without the edge fade
 
     @property
     def css(self) -> ThemeCSS:

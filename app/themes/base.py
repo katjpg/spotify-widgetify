@@ -23,6 +23,7 @@ class BaseTheme(ABC):
     spins: bool = False
     equalizer: bool = False
     marquee_chars: int = 15  # titles longer than this overflow the marquee
+    marquee_fade: bool = True  # soften the marquee edges with a mask while scrolling
 
     def __init__(self, style: ThemeStyle, color: str | None = None):
         self.style = style
