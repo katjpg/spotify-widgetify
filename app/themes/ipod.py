@@ -1,6 +1,5 @@
 from typing import Any
 
-from app.services.color import ColorService
 from app.themes.base import BaseTheme, ThemeCSS
 
 BACKGROUND = "#e2e2e3"
@@ -12,8 +11,6 @@ CONTROLS_BORDER = "#e6e6e6"
 CONTROLS_SHADOW = "0 4px 10px rgba(0, 0, 0, 0.05)"
 ICON = "#b6b4b3"
 ALBUM_BORDER = "#000000"
-SCRIM_LIGHT = "rgba(0,0,0,0.45)"
-SCRIM_DARK = "rgba(0,0,0,0.6)"
 
 
 class IpodTheme(BaseTheme):
@@ -44,13 +41,6 @@ class IpodTheme(BaseTheme):
         css["icon_color"] = ICON
         css["album_border_color"] = ALBUM_BORDER
         css["album_border_width"] = "4px"
-        # the custom color recolors only the background, never the overlay
-        css["overlay_color"] = ColorService.palette(
-            None,
-            self.is_dark,
-            light_default=SCRIM_LIGHT,
-            dark_default=SCRIM_DARK,
-        ).overlay
-
+        # screen uses the album gradient; body keeps fixed chrome colors
         result["css"] = css
         return result

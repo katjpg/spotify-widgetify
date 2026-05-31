@@ -24,8 +24,6 @@ EQ_BAR_DARK = "#4df3ad"
 EQ_BAR_LIGHT = "#0100fb"
 EQ_PROGRESS_DARK = "#242424"
 EQ_PROGRESS_LIGHT = "#181a29"
-SCRIM_DARK = "rgba(0,0,0,0.7)"
-SCRIM_LIGHT = "rgba(0,0,0,0.5)"
 
 
 class RetroTheme(BaseTheme):
@@ -64,7 +62,6 @@ class RetroTheme(BaseTheme):
         css["equalizer_progress_color"] = self._dark_or_light(
             EQ_PROGRESS_DARK, EQ_PROGRESS_LIGHT
         )
-        css["overlay_color"] = self._dark_or_light(SCRIM_DARK, SCRIM_LIGHT)
 
         result["css"] = css
         return result

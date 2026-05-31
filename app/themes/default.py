@@ -4,12 +4,9 @@ from app.services.color import ColorService
 from app.themes.base import BaseTheme, ThemeCSS
 from app.themes.palette import NowPlayingCard
 
-SCRIM_LIGHT = "rgba(0,0,0,0.25)"
-SCRIM_DARK = "rgba(0,0,0,0.6)"
-
 
 class DefaultTheme(BaseTheme):
-    """Blurred album art under a contrast overlay, with an optional equalizer."""
+    """Album-gradient now-playing card, with an optional equalizer."""
 
     template = "widget.html"
     equalizer = True
@@ -34,11 +31,7 @@ class DefaultTheme(BaseTheme):
     def transform_data(self, data: dict[str, Any]) -> dict[str, Any]:
         result = data.copy()
         css = dict(self.css)
-        css["overlay_color"] = ColorService.palette(
-            self.color,
-            self.is_dark,
-            light_default=SCRIM_LIGHT,
-            dark_default=SCRIM_DARK,
-        ).overlay
+        # flat ?color= branch text; gradient branch uses palette.text
+        css["base_text"] = ColorService.text_for(css["background_color"])
         result["css"] = css
         return result

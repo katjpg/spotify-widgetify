@@ -20,7 +20,15 @@ class ThemeName(str, Enum):
 
 @dataclass(frozen=True, slots=True)
 class Palette:
-    overlay: str  # rgba(...) string layered over blurred album art for text contrast
+    primary: str  # gradient start stop, e.g. "rgb(34, 40, 49)"
+    secondary: str  # gradient end stop
+    text: str  # contrast token chosen by gradient luminance
+
+
+# neutral palette for not-playing, missing art, or non-raster (SVG) artwork
+FALLBACK_PALETTE = Palette(
+    primary="rgb(34, 40, 49)", secondary="rgb(57, 62, 70)", text="#FFFFFF"
+)
 
 
 @dataclass(frozen=True, slots=True)

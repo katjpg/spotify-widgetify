@@ -6,7 +6,7 @@ import httpx
 
 from app.assets.images import ImageEncoder
 from app.config import Settings
-from app.domain import Track
+from app.domain import FALLBACK_PALETTE, Track
 
 logger = logging.getLogger(__name__)
 
@@ -139,13 +139,16 @@ class SpotifyClient:
             # prefer the medium image (index 1) over the largest
             album_image_url = images[1]["url"] if len(images) > 1 else images[0]["url"]
 
-        album_art = (
-            await self.encoder.encode_url(album_image_url, self.http_client)
-            if album_image_url
-            else self.encoder.get_default_image()
-        )
+        if album_image_url:
+            album_art, palette = await self.encoder.encode_url_with_palette(
+                album_image_url, self.http_client
+            )
+        else:
+            album_art, palette = self.encoder.get_default_image(), FALLBACK_PALETTE
 
-        return Track.from_spotify_item(item, album_art=album_art, is_playing=is_playing)
+        return Track.from_spotify_item(
+            item, album_art=album_art, is_playing=is_playing, palette=palette
+        )
 
     def _default_track(self) -> Track:
         return Track(

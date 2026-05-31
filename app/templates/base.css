@@ -15,35 +15,44 @@ a { text-decoration: none; }
     100% { transform: rotate(360deg); }
 }
 
-/* Marquee animation - scroll left w/ pauses, then reverse */
+/* Marquee - scroll long titles at constant speed (duration injected per track) */
 @keyframes marquee {
     0%, 15% { transform: translateX(0); }
     85%, 100% { transform: translateX(var(--marquee-distance, -50%)); }
 }
 
+/* syntax angle-brackets escaped for XML; decode to the CSS color type */
+@property --edge {
+    syntax: "&lt;color&gt;";
+    inherits: false;
+    initial-value: black;
+}
+
+/* fade both edges only mid-scroll; crisp at each dwell point (no first-letter fade at rest) */
+@keyframes edge-fade {
+    0%, 15%   { --edge: black; }
+    30%, 70%  { --edge: transparent; }
+    85%, 100% { --edge: black; }
+}
+
 .marquee-wrapper {
     overflow: hidden;
-    position: relative;
-    /* Fade edges to indicate overflow */
-    -webkit-mask-image: linear-gradient(
-        to right,
-        transparent 0%,
-        black 8%,
-        black 92%,
-        transparent 100%
-    );
-    mask-image: linear-gradient(
-        to right,
-        transparent 0%,
-        black 8%,
-        black 92%,
-        transparent 100%
-    );
+    -webkit-mask-image: linear-gradient(to right, var(--edge), black 12%, black 88%, var(--edge));
+            mask-image: linear-gradient(to right, var(--edge), black 12%, black 88%, var(--edge));
+    animation: edge-fade var(--marquee-duration, 18s) ease-in-out infinite alternate;
+    animation-delay: 3s;
 }
 
 .marquee {
     display: inline-block;
     white-space: nowrap;
-    animation: marquee 18s ease-in-out infinite alternate;
+    animation: marquee var(--marquee-duration, 18s) ease-in-out infinite alternate;
     animation-delay: 3s;
+}
+
+/* static single-line truncation - used for the artist (only the title scrolls) */
+.text-ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

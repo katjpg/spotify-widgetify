@@ -29,6 +29,10 @@ class RenderingService:
             "logo": self._encoder.get_spotify_logo(),
             "spin": theme.spins,
             "show_equalizer": theme.equalizer and config.eq_color.lower() != "none",
+            "palette": track.palette,
+            "has_color": config.color is not None,
+            # longer titles get proportionally longer durations for a constant scroll speed
+            "marquee_duration": f"{max(12, round(len(track.title) * 0.4))}s",
         }
         if "vinyl_overlay" in theme.required_assets:
             context["vinyl_svg"] = self._encoder.get_vinyl_overlay()

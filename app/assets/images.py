@@ -6,6 +6,9 @@ from pathlib import Path
 
 import httpx
 
+from app.domain import FALLBACK_PALETTE, Palette
+from app.services.color import ColorService
+
 logger = logging.getLogger(__name__)
 
 _DEFAULT_IMAGE_SVG = """
@@ -57,12 +60,14 @@ class ImageEncoder:
 
     def __init__(self, static_dir: Path, max_cache_size: int = 100):
         self.static_dir = static_dir
-        self._cache: OrderedDict[str, str] = OrderedDict()
+        self._cache: OrderedDict[str, tuple[str, Palette]] = OrderedDict()
         self.max_cache_size = max_cache_size
 
-    async def encode_url(self, url: str, http_client: httpx.AsyncClient) -> str:
-        """Fetch `url` and return its base64 body, caching by url. Return the default image on
-        timeout or transport error (logged)."""
+    async def encode_url_with_palette(
+        self, url: str, http_client: httpx.AsyncClient
+    ) -> tuple[str, Palette]:
+        """Fetch `url` once; return its base64 body and the album Palette, caching the pair by url.
+        Return (default image, FALLBACK_PALETTE) on timeout or transport error (logged)."""
         if url in self._cache:
             self._cache.move_to_end(url)
             return self._cache[url]
@@ -71,19 +76,20 @@ class ImageEncoder:
             response = await http_client.get(url, timeout=3.0)
             if response.status_code == 200:
                 encoded = _encode(response.content)
-                self._add_to_cache(url, encoded)
-                return encoded
+                palette = ColorService.extract_palette(response.content)
+                self._add_to_cache(url, (encoded, palette))
+                return encoded, palette
         except httpx.TimeoutException:
             logger.warning(f"Timeout fetching image: {url}")
         except httpx.RequestError as e:
             logger.warning(f"Error fetching image: {e}")
 
-        return self.get_default_image()
+        return self.get_default_image(), FALLBACK_PALETTE
 
-    def _add_to_cache(self, url: str, encoded: str) -> None:
+    def _add_to_cache(self, url: str, value: tuple[str, Palette]) -> None:
         if len(self._cache) >= self.max_cache_size:
             self._cache.popitem(last=False)  # evict oldest
-        self._cache[url] = encoded
+        self._cache[url] = value
 
     def _encode_asset(self, filename: str, fallback_svg: str) -> str:
         """Encode static_dir/filename, falling back to an inline SVG when the file is absent."""

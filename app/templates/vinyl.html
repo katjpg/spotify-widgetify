@@ -1,6 +1,7 @@
-<svg width="100%" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="400" height="180" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <foreignObject width="100%" height="100%">
       <div xmlns="http://www.w3.org/1999/xhtml" class="container">
+        {% set fg = css.base_text if has_color else palette.text %}
         <style>
           {% include "base.css" %}
 
@@ -14,41 +15,48 @@
             position: relative;
             height: 140px;
             width: 360px; /* Account for padding */
+            --fg: {{ fg }};
+            {% if has_color %}
+            background: {{ css.background_color }};
+            {% else %}
+            background: #000;
+            {% endif %}
           }
-          
-          /* Background with blur effect */
-          .background-blur {
+
+          /* layer 1: blurred cover = color field */
+          .cover-blur {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url("data:image/png;base64,{{ base_64_track_image }}");
-            background-size: cover;
-            background-position: center;
-            filter: blur(30px);
-            opacity: 0.35;
-            z-index: -1;
+            inset: -30px;
+            background: url("data:image/png;base64,{{ base_64_track_image }}") center / cover;
+            filter: blur(32px) saturate(1.5) brightness(1.0);  /* brightness lifts dark covers */
+            transform: scale(1.2);
+            z-index: 0;
           }
-          
-          .background-overlay {
+
+          /* layer 2: soft white frost bloom over a faint veil */
+          .cover-tint {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: {{ css.overlay_color }};
-            z-index: -1;
+            inset: 0;
+            background:
+              radial-gradient(130px 100px at 24% 20%, rgba(255, 255, 255, 0.12), transparent 100%),
+              radial-gradient(150px 120px at 80% 76%, rgba(255, 255, 255, 0.08), transparent 100%),
+              radial-gradient(110px 90px at 60% 44%, rgba(255, 255, 255, 0.05), transparent 96%),
+              linear-gradient(rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)),
+              linear-gradient(rgba(0, 0, 0, 0.10), rgba(0, 0, 0, 0.22));  /* faint dark wash under the frost */
+            z-index: 0;
+            pointer-events: none;
           }
-          
+
           /* Content Container */
           .content {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             height: 100%;
+            position: relative;
+            z-index: 1;
           }
-          
+
           /* Header with Now Playing and Spotify logo */
           .header {
             display: flex;
@@ -56,20 +64,21 @@
             margin-bottom: 5px;
             margin-left: 8px;
           }
-          
+
           .logo {
             width: 20px;
             height: 20px;
             margin-right: 10px;
-            filter: brightness(0) invert(1); /* Make logo white */
+            filter: brightness(0){% if fg == '#FFFFFF' %} invert(1){% endif %};
           }
-          
+
           .now-playing {
             font-family: {{ css.text_font }};
             font-size: 14px;
-            color: rgba(255, 255, 255, 0.6);
+            color: var(--fg);
+            opacity: 0.7;
           }
-          
+
           /* Vinyl Player Section - Centered and moved higher */
           .player-container {
             position: relative;
@@ -79,7 +88,7 @@
             margin-top: -80px; /* Move it higher */
             margin-left: 90px;
           }
-          
+
           /* Album Cover and Vinyl Container */
           .album-container {
             position: relative;
@@ -89,7 +98,7 @@
             justify-content: center;
             align-items: center;
           }
-          
+
           /* Album art in vinyl */
           .cover {
             width: 88px;
@@ -99,7 +108,7 @@
             z-index: 2;
             {% if spin %}animation: spin {{ css.spin_duration }} linear infinite;{% endif %}
           }
-          
+
           /* Vinyl SVG overlay */
           .vinyl-overlay {
             position: absolute;
@@ -108,19 +117,19 @@
             z-index: 1;
             {% if spin %}animation: spin {{ css.spin_duration }} linear infinite;{% endif %}
           }
-          
+
           /* Vinyl Needle - enlarged and repositioned */
           .vinyl-needle {
             position: absolute;
-            width: 160px; 
-            height: 240px; 
+            width: 160px;
+            height: 240px;
             right: 15px; /* Position relative to the vinyl */
             top: -55px; /* Position higher to account for larger size */
             z-index: 3; /* Above both vinyl and album art */
             transform-origin: top right;
             transform: rotate(9.5deg);
           }
-          
+
           /* Track Info Section */
           .track-info {
             text-align: left;
@@ -130,12 +139,12 @@
             z-index: 2;
             width: 100%;
           }
-          
+
           /* Song Title */
           .track-name {
             font-size: 20px;
             font-weight: 500;
-            color: {{ css.title_color }};
+            color: var(--fg);
             max-width: 160px;
             padding: 0 10px;
             --marquee-distance: min(0px, calc(-100% + 140px));
@@ -144,60 +153,54 @@
           /* Artist Name */
           .track-artist {
             font-size: 14px;
-            color: {{ css.subtitle_color }};
+            color: var(--fg);
+            opacity: 0.85;
             max-width: 160px;
             margin-top: 4px;
             padding: 0 10px;
-            --marquee-distance: min(0px, calc(-100% + 140px));
           }
-          
+
         </style>
-        
+
         <a href="https://open.spotify.com/track/{{ track_id }}" target="_blank">
           <main>
-            <!-- Blurred background -->
-            <div class="background-blur"></div>
-            <div class="background-overlay"></div>
-            
+            {% if not has_color %}<div class="cover-blur"></div><div class="cover-tint"></div>{% endif %}
+
             <div class="content">
               <!-- Header with Now Playing text and Spotify logo -->
               <div class="header">
-                <img class="logo" src="data:image/svg+xml;base64,{{ logo }}" alt="Spotify"/>
+                <img class="logo" src="data:image/svg+xml;base64,{{ logo }}" alt="Spotify" />
                 <div class="now-playing">Now Playing</div>
               </div>
-              
+
               <!-- Vinyl Player Section -->
               <div class="player-container">
                 <div class="album-container">
                   <!-- Vinyl record overlay -->
-                  <img 
+                  <img
                     class="vinyl-overlay"
                     src="data:image/svg+xml;base64,{{ vinyl_svg }}"
                     alt="Vinyl Record"
                   />
                   <!-- Album art -->
-                  <img 
-                    class="cover" 
-                    src="data:image/png;base64,{{ base_64_track_image }}" 
+                  <img
+                    class="cover"
+                    src="data:image/png;base64,{{ base_64_track_image }}"
                     alt="{{ track_name }} by {{ track_artist }}"
                   />
                 </div>
                 <!-- Vinyl needle overlay - positioned outside album container for better placement -->
-                <img 
+                <img
                   class="vinyl-needle"
                   src="data:image/svg+xml;base64,{{ vinyl_needle_svg }}"
                   alt="Vinyl Needle"
                 />
               </div>
-              
+
               <!-- Track Information at the bottom -->
               <div class="track-info">
-                <div class="track-name marquee-wrapper">
-                  <span class="marquee">{{ track_name }}</span>
-                </div>
-                <div class="track-artist marquee-wrapper">
-                  <span class="marquee">{{ track_artist }}</span>
-                </div>
+                <div class="track-name marquee-wrapper"><span class="marquee">{{ track_name }}</span></div>
+                <div class="track-artist text-ellipsis">{{ track_artist }}</div>
               </div>
             </div>
           </main>

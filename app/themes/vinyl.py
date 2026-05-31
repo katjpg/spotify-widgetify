@@ -4,12 +4,9 @@ from app.services.color import ColorService
 from app.themes.base import BaseTheme, ThemeCSS
 from app.themes.palette import NowPlayingCard
 
-SCRIM_LIGHT = "rgba(0,0,0,0.45)"
-SCRIM_DARK = "rgba(0,0,0,0.6)"
-
 
 class VinylTheme(BaseTheme):
-    """Spinning vinyl record with the album art at its center."""
+    """Spinning vinyl record over an album-gradient card."""
 
     template = "vinyl.html"
     required_assets = ("vinyl_overlay", "vinyl_needle")
@@ -33,17 +30,13 @@ class VinylTheme(BaseTheme):
         )
 
         result = dict(base_css)
-        result["overlay_color"] = ColorService.palette(
-            self.color,
-            self.is_dark,
-            light_default=SCRIM_LIGHT,
-            dark_default=SCRIM_DARK,
-            guard_six=True,
-        ).overlay
         result["spin_duration"] = "10s"
         return result
 
     def transform_data(self, data: dict[str, Any]) -> dict[str, Any]:
         result = data.copy()
-        result["css"] = self.css
+        css = dict(self.css)
+        # flat ?color= branch text; gradient branch uses palette.text
+        css["base_text"] = ColorService.text_for(css["background_color"])
+        result["css"] = css
         return result
