@@ -1,11 +1,29 @@
+# python
 __pycache__/
-*.py[cod]
-*$py.class
-venv
+*.py[oc]
+/build/
+/dist/
+/wheels/
+*.egg-info/
+
+# virtual env
+.venv/
+venv/
+
+# prototyping
+/docs/
+
+# env variables
 .env
-.vercel
+.env.*
+!.env.example
+
+# vscode pylance
+.vscode/
+
+# misc
 .DS_Store
+*.pem
 
-
-# misc 
-/docs
+# vercel
+.vercel

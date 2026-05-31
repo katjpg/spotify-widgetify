@@ -1,7 +1,0 @@
-fastapi
-uvicorn
-httpx
-jinja2
-python-dotenv
-pydantic
-pydantic-settings
