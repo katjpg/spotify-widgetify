@@ -10,7 +10,7 @@ div, span, h1, p, a, img {
 }
 a { text-decoration: none; }
 
-/* Spin animation - used by default & vinyl themes */
+/* Spin animation - used by default and vinyl themes */
 @keyframes spin {
     100% { transform: rotate(360deg); }
 }

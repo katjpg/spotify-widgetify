@@ -165,26 +165,26 @@
           }
         </style>
 
-        <svg width="0" height="0">
+        <svg width="0" height="0" xmlns="http://www.w3.org/2000/svg">
           <filter id="dither">
-            <feImage height="4" width="4" xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAA+UlEQVR42gXBERTCUABA0X/OYDAYDAZBEAyCIBgMgiAIgiAYBINgEAwGgyAIBsFgMAiCIAiCIAgGQTAYDAaDIAiCwWDwulcIIXg8HgwGA36/H4qi8Hq9sCyLtm0Rm82G0WjE5XJhvV4ThiHT6ZT7/U4QBIhut0tVVaiqSpZl9Pt9vt8vnU6HsiwRh8OB5XLJfr9nNptxPp9xXZckSbBtGyHLMs/nE9M0aZoGSZJI05ThcEhd14jdbsdkMuF2u+H7PtvtlvF4zPV6xfM8hGEYfD4fdF2nKAp6vR7v9xtN08jzHHE6nVitVsRxzGKx4Hg84jgOURQxn8/5A7oKnYRU4EpfAAAAAElFTkSuQmCC'></feImage>
-            <fetile></fetile>
-            <fecomposite in='SourceGraphic' k1='0' k2='1' k3='1' k4='-0.5' operator='arithmetic'></fecomposite>
-            <fecomponenttransfer>
-              <fefuncr tablevalues='0 1' type='discrete'></fefuncr>
-              <fefuncg tablevalues='0 1' type='discrete'></fefuncg>
-              <fefuncb tablevalues='0 1' type='discrete'></fefuncb>
-            </fecomponenttransfer>
+            <feImage height="4" width="4" xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAA+UlEQVR42gXBERTCUABA0X/OYDAYDAZBEAyCIBgMgiAIgiAYBINgEAwGgyAIBsFgMAiCIAiCIAgGQTAYDAaDIAiCwWDwulcIIXg8HgwGA36/H4qi8Hq9sCyLtm0Rm82G0WjE5XJhvV4ThiHT6ZT7/U4QBIhut0tVVaiqSpZl9Pt9vt8vnU6HsiwRh8OB5XLJfr9nNptxPp9xXZckSbBtGyHLMs/nE9M0aZoGSZJI05ThcEhd14jdbsdkMuF2u+H7PtvtlvF4zPV6xfM8hGEYfD4fdF2nKAp6vR7v9xtN08jzHHE6nVitVsRxzGKx4Hg84jgOURQxn8/5A7oKnYRU4EpfAAAAAElFTkSuQmCC' />
+            <feTile />
+            <feComposite in='SourceGraphic' k1='0' k2='1' k3='1' k4='-0.5' operator='arithmetic' />
+            <feComponentTransfer>
+              <feFuncR tableValues='0 1' type='discrete' />
+              <feFuncG tableValues='0 1' type='discrete' />
+              <feFuncB tableValues='0 1' type='discrete' />
+            </feComponentTransfer>
           </filter>
         </svg>
 
-        <a href="[https://open.spotify.com/track/](https://open.spotify.com/track/){{ track_id }}" target="_blank">
+        <a href="https://open.spotify.com/track/{{ track_id }}" target="_blank">
           <div class="nowplaying">
             <h3>Now Playing</h3>
 
             <div class="content-area">
               <div class="album-container">
-                <img class="album-art" src="data:image/png;base64,{{ base_64_track_image }}" alt="{{ track_name }} by {{ track_artist }}">
+                <img class="album-art" src="data:image/png;base64,{{ base_64_track_image }}" alt="{{ track_name }} by {{ track_artist }}" />
               </div>
 
               <div class="right-column">

@@ -1,4 +1,3 @@
-import html
 from pathlib import Path
 from typing import Annotated
 
@@ -47,12 +46,10 @@ async def get_github_image(
     track = await spotify.fetch_current_track()
     rendered = rendering.render_widget(track, config)
 
+    # Jinja autoescape (on by default) escapes track fields to valid XML
     content = templates.get_template(rendered.template_name).render(
         {"request": request, **rendered.context}
     )
-    # decode HTML entities (&#39; -> '), then re-encode bare & so the SVG is valid XML
-    content = html.unescape(content)
-    content = content.replace("&", "&amp;")
     return Response(content=content, media_type="image/svg+xml")
 
 
