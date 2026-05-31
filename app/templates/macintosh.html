@@ -85,6 +85,7 @@
             object-fit: cover;
             display: block; /* Prevents potential small gap under image */
             filter: saturate(0) brightness(1.15) url(#dither);
+            image-rendering: pixelated; /* keep the 1-bit dither when the svg scales off 100% */
           }
 
           /* Track info container */
